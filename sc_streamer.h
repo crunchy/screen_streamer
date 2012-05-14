@@ -13,13 +13,13 @@
 
 #include <stdint.h>
 #include <math.h>
-#include <x264.h>
-#include <output/output.h>
 
 #include "bytestream.h"
+#include "flv_bytestream_ext.h"
 
 typedef struct {
-    hnd_t flv_out_handle;
+    flv_hnd_t flv_out_handle;
+    RTMP *rtmp;
 
     uint16_t frames;
     sc_time start_time_stamp;
@@ -35,8 +35,5 @@ void sc_streamer_send_frame(sc_streamer streamer, uint8_t* YUV_frame, sc_time fr
 void sc_streamer_send_mouse_data(sc_streamer streamer, sc_mouse_coords coords, sc_time coords_time_stamp);
 void sc_streamer_stop(sc_streamer streamer);
 
-#endif
 
-int main() {
-    return 0;
-}
+#endif

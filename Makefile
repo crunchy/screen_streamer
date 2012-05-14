@@ -1,14 +1,16 @@
 # Flags passed to the preprocessor.
-CPPFLAGS += -I/Users/hungerandthirst/Code/Projects/crunchy/screenshare/screen_streamer/x264 \
-	-I/Users/hungerandthirst/Code/Projects/crunchy/screenshare/screen_streamer/librtmp \
-	-I/Users/hungerandthirst/Code/Projects/crunchy/screenshare/screen_streamer/lib
+CPPFLAGS += -I./libx264 \
+	-I./librtmp \
+	-I./lib
 
 # Flags passed to the C++ compiler.
 CXXFLAGS += -g -Wall -Wextra -std=c99 -arch x86_64
 
 CXX = gcc
 
-LIB = ./lib
+LIB = lib
+X264 = libx264
+RTMP = librtmp
 
 BUILD = screen_streamer
 
@@ -22,11 +24,17 @@ clean :
 tpl.o : $(LIB)/tpl.c
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(LIB)/tpl.c
 
-bytestream.o : $(LIB)/bytestream.c $(LIB)/tpl.h
+flv_bytestream.o : $(X264)/output/flv_bytestream.c
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(X264)/output/flv_bytestream.c
+
+flv_bytestream_ext.o : flv_bytestream_ext.c
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c flv_bytestream_ext.c
+
+bytestream.o : $(LIB)/bytestream.c
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(LIB)/bytestream.c
 
 sc_streamer.o : $(LIB)/bytestream.h $(LIB)/tpl.h sc_streamer.h sc_streamer.c
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c sc_streamer.c
 
-screen_streamer : bytestream.o sc_streamer.o tpl.o librtmp.a x264/libx264.a
+screen_streamer : flv_bytestream_ext.o bytestream.o flv_bytestream.o sc_streamer.o flv_bytestream.o tpl.o librtmp.a $(X264)/libx264.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@

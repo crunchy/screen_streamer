@@ -12,14 +12,14 @@
 
 sc_streamer sc_streamer_init(const char* stream_uri, const char* room_name, sc_frame_rect capture_rect, sc_time start_time_stamp){
     x264_param_t param;
-    cli_output_opt_t output_opt;
 
     sc_streamer sc_streamer = {.start_time_stamp = start_time_stamp,
         .stream_uri = stream_uri,
         .room_name = room_name,
         .capture_rect = capture_rect};
 
-    flv_output.open_RTMP_stream( stream_uri, &sc_streamer.flv_out_handle, &output_opt );
+    RTMP *rtmp = open_RTMP_stream( stream_uri, &sc_streamer.flv_out_handle );
+    sc_streamer.rtmp = rtmp;
 
     x264_param_default_preset(&param, "ultrafast", "zerolatency");
     x264_param_apply_profile(&param, "baseline");
@@ -48,13 +48,13 @@ sc_streamer sc_streamer_init(const char* stream_uri, const char* room_name, sc_f
 
     sc_streamer.encoder = x264_encoder_open(&param);
 
-    flv_output.set_param( sc_streamer.flv_out_handle, &param );
+    set_param( sc_streamer.flv_out_handle, &param );
 
     x264_nal_t *headers;
     int i_nal;
 
     x264_encoder_headers( sc_streamer.encoder, &headers, &i_nal );
-    flv_output.write_headers( sc_streamer.flv_out_handle, headers );
+    write_headers( sc_streamer.flv_out_handle, headers );
 
     headers = NULL;
     free(headers);
@@ -67,16 +67,6 @@ void sc_streamer_send_frame(sc_streamer streamer, uint8_t* YUV_frame, sc_time fr
     x264_picture_alloc(&pic_in, X264_CSP_I420, streamer.capture_rect.width, streamer.capture_rect.height);
 
     const size_t image_size = (streamer.capture_rect.width * streamer.capture_rect.height);
-    const size_t frame_mem = ceil((image_size) / 4) * 6;
-
-    FILE *test = fopen("/tmp/aFrame.txt", "wb");
-
-    fprintf(test, "size:%zu|", frame_mem);
-    for(int i=0; i<frame_mem; i++) {
-        fprintf(test, "%ui", YUV_frame[i]);
-    }
-
-    fclose(test);
 
     free(pic_in.img.plane[0]);
 
@@ -92,7 +82,7 @@ void sc_streamer_send_frame(sc_streamer streamer, uint8_t* YUV_frame, sc_time fr
     int frame_size = x264_encoder_encode(streamer.encoder, &nals, &i_nals, &pic_in, &pic_out);
 
     if(frame_size > 0) {
-        flv_output.write_frame( streamer.flv_out_handle, nals[0].p_payload, frame_size, &pic_out );
+       write_frame( streamer.flv_out_handle, nals[0].p_payload, frame_size, &pic_out );
     }
 
     streamer.frames++;
@@ -105,10 +95,13 @@ void sc_streamer_send_frame(sc_streamer streamer, uint8_t* YUV_frame, sc_time fr
 
 // TODO: get room name
 void sc_streamer_send_mouse_data(sc_streamer streamer, sc_mouse_coords coords, sc_time coords_time_stamp) {
-    flv_output.send_invoke( streamer.flv_out_handle, coords.x, coords.y, coords_time_stamp, streamer.room_name );
+    send_invoke( streamer.rtmp, coords.x, coords.y, coords_time_stamp, streamer.room_name );
 }
 
 void sc_streamer_stop(sc_streamer streamer) {
     x264_encoder_close(streamer.encoder);
-    flv_output.close_RTMP_stream(streamer.flv_out_handle);
+    close_RTMP_stream(streamer.flv_out_handle, streamer.rtmp);
 }
+
+
+int main() { return 0; }

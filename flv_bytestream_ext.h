@@ -42,5 +42,3 @@ int close_RTMP_stream(flv_hnd_t handle, RTMP *rtmp);
 int set_param( flv_hnd_t handle, x264_param_t *p_param );
 int write_headers( flv_hnd_t handle, x264_nal_t *p_nal );
 int write_frame( flv_hnd_t handle, uint8_t *p_nalu, int i_size, x264_picture_t *p_picture );
-
-void x264_cli_log( const char *name, int i_level, const char *fmt, ... );

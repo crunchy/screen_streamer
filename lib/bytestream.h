@@ -20,6 +20,7 @@
 #define START 0x02
 #define MOUSE 0x03
 #define VIDEO 0x04
+#define NO_DATA 0xFF
 
 typedef uint32_t sc_time;
 static char TPL_STRUCTURE[] = "S(vu)B";
@@ -64,3 +65,5 @@ sc_bytestream_header sc_bytestream_get_event_header(int fd);
 sc_bytestream_header create_header(uint8_t event);
 void serialize_packet(int fd, sc_bytestream_packet packet);
 sc_bytestream_packet deserialize_packet(int fd);
+sc_frame parse_frame(sc_bytestream_packet packet);
+sc_mouse_coords parse_mouse_coords(sc_bytestream_packet packet);

@@ -12,13 +12,13 @@ RTMP *open_RTMP_stream(const char *stream_uri, flv_hnd_t *p_handle)
     p_handle = NULL;
 
     if( !p_flv )
-        return -1;
+        return NULL;
     memset( p_flv, 0, sizeof(*p_flv) );
 
     RTMP *rtmp;
     p_flv->c = flv_create_RTMP_writer( stream_uri, rtmp );
     if( !p_flv->c )
-        return -1;
+        return NULL;
 
     p_handle = p_flv;
 

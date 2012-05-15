@@ -1,14 +1,4 @@
-//
-//  sc_streamer.c
-//  Screen Share
-//
-//  Created by Gabe Bell on 4/6/12.
-//  Copyright (c) 2012 Salescrunch, Inc. All rights reserved.
-//
-
 #include "sc_streamer.h"
-
-
 
 sc_streamer sc_streamer_init(const char* stream_uri, const char* room_name, sc_frame_rect capture_rect, sc_time start_time_stamp){
     x264_param_t param;
@@ -18,8 +8,7 @@ sc_streamer sc_streamer_init(const char* stream_uri, const char* room_name, sc_f
         .room_name = room_name,
         .capture_rect = capture_rect};
 
-    RTMP *rtmp = open_RTMP_stream( stream_uri, &sc_streamer.flv_out_handle );
-    sc_streamer.rtmp = rtmp;
+    sc_streamer.rtmp = open_RTMP_stream( stream_uri, &sc_streamer.flv_out_handle );
 
     x264_param_default_preset(&param, "ultrafast", "zerolatency");
     x264_param_apply_profile(&param, "baseline");
@@ -104,4 +93,57 @@ void sc_streamer_stop(sc_streamer streamer) {
 }
 
 
-int main() { return 0; }
+
+// main processing loop
+
+int main(int argc, char* argv[]) {
+    char c, *streamUri, *roomName;
+    sc_frame_rect rect;
+
+    while ((c = getopt (argc, argv, "w:h:u:r:")) != -1) {
+        switch (c) {
+            case 'w':
+            rect.width = optarg;
+            break;
+            case 'h':
+            rect.height = optarg;
+            break;
+            case 'u':
+            streamUri = optarg;
+            break;
+            case 'r':
+            roomName = optarg;
+            break;
+        }
+    }
+
+    sc_streamer streamer;
+
+    do {
+        sc_bytestream_packet packet = sc_bytestream_get_event(stdin);
+        sc_mouse_coords coords;
+        sc_frame frame;
+
+        switch(packet.header.type) {
+            case START:
+                streamer = sc_streamer_init(streamUri, roomName, rect, time(NULL));
+                break;
+            case STOP:
+                sc_streamer_stop(streamer);
+                break;
+            case MOUSE:
+                coords = parse_mouse_coords(packet);
+                sc_streamer_send_mouse_data(streamer, coords, packet.header.timestamp);
+                break;
+            case VIDEO:
+                frame = parse_frame(packet);
+                sc_streamer_send_frame(streamer, frame.framePtr, packet.header.timestamp);
+                break;
+            case NO_DATA:
+            default:
+                break;    // maybe a wait is in order
+        }
+    } while(TRUE);
+
+    return 0;
+}

@@ -35,13 +35,12 @@ typedef struct
     unsigned start;
 } flv_hnd_t;
 
-flv_buffer *flv_create_RTMP_writer( const char *stream_uri, RTMP *rtmp );
-int flv_close_RTMP_writer( RTMP *rtmp );
-int flv_flush_RTMP_data( RTMP *rtmp, flv_buffer *c );
 RTMP *open_RTMP_stream( const char *stream_uri, flv_hnd_t *p_handle );
-int send_invoke( RTMP *rtmp, uint16_t x, uint16_t y, uint32_t timestamp, const char* room_name );
 int close_RTMP_stream(flv_hnd_t handle, RTMP *rtmp);
 
+int flv_flush_RTMP_data( RTMP *rtmp, flv_buffer *c );
+int send_invoke( RTMP *rtmp, uint16_t x, uint16_t y, uint32_t timestamp, const char* room_name );
+
 int set_param( flv_hnd_t handle, x264_param_t *p_param );
-int write_headers( flv_hnd_t handle, x264_nal_t *p_nal );
-int write_frame( flv_hnd_t handle, uint8_t *p_nalu, int i_size, x264_picture_t *p_picture );
+int write_headers( flv_hnd_t handle, RTMP *rtmp, x264_nal_t *p_nal );
+int write_frame( flv_hnd_t handle, RTMP *rtmp, uint8_t *p_nalu, int i_size, x264_picture_t *p_picture );

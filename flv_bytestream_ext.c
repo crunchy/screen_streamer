@@ -9,18 +9,31 @@ do {\
 RTMP *open_RTMP_stream(const char *stream_uri, flv_hnd_t *p_handle)
 {
     flv_hnd_t *p_flv = malloc( sizeof(*p_flv) );
+    flv_buffer *c = malloc( sizeof(*c) );
+
     p_handle = NULL;
 
-    if( !p_flv )
+    if( !p_flv ) {
+        free(p_flv);
         return NULL;
+    }
     memset( p_flv, 0, sizeof(*p_flv) );
 
-    RTMP *rtmp;
-    p_flv->c = flv_create_RTMP_writer( stream_uri, rtmp );
-    if( !p_flv->c )
+    if( !c ) {
+        free(c);
         return NULL;
+    }
+    memset( c, 0, sizeof(*c) );
 
+    p_flv->c = c;
     p_handle = p_flv;
+
+    RTMP *rtmp = RTMP_Alloc();
+    RTMP_Init(rtmp);
+    RTMP_SetupURL(rtmp, stream_uri);
+    RTMP_EnableWrite(rtmp);             // To publish a stream, enable write support before connect
+    RTMP_Connect(rtmp, NULL);
+    RTMP_ConnectStream(rtmp, 0);
 
     return rtmp;
 }
@@ -30,7 +43,8 @@ int close_RTMP_stream(flv_hnd_t handle, RTMP *rtmp)
     flv_hnd_t *p_flv = &handle;
     flv_buffer *c = p_flv->c;
 
-    flv_close_RTMP_writer( rtmp );
+    RTMP_Close(rtmp);
+    RTMP_Free(rtmp);
 
     fclose( c->fp );
     free( p_flv );
@@ -71,14 +85,6 @@ int send_invoke( RTMP *rtmp, uint16_t x, uint16_t y, uint32_t timestamp, const c
   return RTMP_SendPacket(rtmp, &packet, TRUE);
 }
 
-int flv_close_RTMP_writer( RTMP *rtmp )
-{
-    RTMP_Close(rtmp);
-    RTMP_Free(rtmp);
-
-    return 0;
-}
-
 int flv_flush_RTMP_data( RTMP *rtmp, flv_buffer *flv )
 {
     if( !flv->d_cur )
@@ -91,30 +97,6 @@ int flv_flush_RTMP_data( RTMP *rtmp, flv_buffer *flv )
     flv->d_cur = 0;
 
     return 0;
-}
-
-flv_buffer *flv_create_RTMP_writer( const char *stream_uri, RTMP *rtmp )
-{
-    flv_buffer *c = malloc( sizeof(*c) );
-
-    if( !c )
-        return NULL;
-    memset( c, 0, sizeof(*c) );
-
-    rtmp = RTMP_Alloc();
-    RTMP_Init(rtmp);
-    RTMP_SetupURL(rtmp, stream_uri);
-    RTMP_EnableWrite(rtmp); // To publish a stream, enable write support before connect
-    RTMP_Connect(rtmp, NULL);
-    RTMP_ConnectStream(rtmp, 0);
-
-    if( !c )
-    {
-        free( c );
-        return NULL;
-    }
-
-    return c;
 }
 
 int set_param( flv_hnd_t handle, x264_param_t *p_param )
@@ -183,7 +165,7 @@ int set_param( flv_hnd_t handle, x264_param_t *p_param )
     return 0;
 }
 
-int write_headers( flv_hnd_t handle, x264_nal_t *p_nal )
+int write_headers( flv_hnd_t handle, RTMP *rtmp, x264_nal_t *p_nal )
 {
     flv_hnd_t *p_flv = &handle;
     flv_buffer *c = p_flv->c;
@@ -236,12 +218,12 @@ int write_headers( flv_hnd_t handle, x264_nal_t *p_nal )
     unsigned length = c->d_cur - p_flv->start;
     flv_rewrite_amf_be24( c, length, p_flv->start - 10 );
     flv_put_be32( c, length + 11 ); // Last tag size
-    CHECK( flv_flush_data( c ) );
+    CHECK( flv_flush_RTMP_data( rtmp, c ) );
 
     return sei_size + sps_size + pps_size;
 }
 
-int write_frame( flv_hnd_t handle, uint8_t *p_nalu, int i_size, x264_picture_t *p_picture )
+int write_frame( flv_hnd_t handle, RTMP *rtmp, uint8_t *p_nalu, int i_size, x264_picture_t *p_picture )
 {
     flv_hnd_t *p_flv = &handle;
     flv_buffer *c = p_flv->c;
@@ -297,7 +279,7 @@ int write_frame( flv_hnd_t handle, uint8_t *p_nalu, int i_size, x264_picture_t *
     unsigned length = c->d_cur - p_flv->start;
     flv_rewrite_amf_be24( c, length, p_flv->start - 10 );
     flv_put_be32( c, 11 + length ); // Last tag size
-    CHECK( flv_flush_data( c ) );
+    CHECK( flv_flush_RTMP_data( rtmp, c ) );
 
     p_flv->i_framenum++;
 

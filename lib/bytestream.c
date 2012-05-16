@@ -76,7 +76,7 @@ sc_mouse_coords parse_mouse_coords(sc_bytestream_packet packet) {
   void *data = packet.body.addr;
 
   sc_mouse_coords coords = *((sc_mouse_coords *) data);
-  free(data);
+  // free(data);
 
   return coords;
 }
@@ -85,7 +85,7 @@ sc_frame parse_frame(sc_bytestream_packet packet) {
   void *data = packet.body.addr;
 
   sc_frame frame = *((sc_frame *) data);
-  free(data);
+  // free(data);
 
   return frame;
 }

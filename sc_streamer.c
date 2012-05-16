@@ -1,5 +1,6 @@
 #include "sc_streamer.h"
 #include <stdarg.h>
+#include <sys/time.h>
 
 extern tpl_hook_t tpl_hook;
 
@@ -12,6 +13,8 @@ sc_streamer sc_streamer_init(const char* stream_uri, const char* room_name, sc_f
         .capture_rect = capture_rect};
 
     sc_streamer.rtmp = open_RTMP_stream( stream_uri, &sc_streamer.flv_out_handle );
+
+    printf("rtmp %p\n", sc_streamer.rtmp);
 
     x264_param_default_preset(&param, "ultrafast", "zerolatency");
     x264_param_apply_profile(&param, "baseline");
@@ -46,7 +49,7 @@ sc_streamer sc_streamer_init(const char* stream_uri, const char* room_name, sc_f
     int i_nal;
 
     x264_encoder_headers( sc_streamer.encoder, &headers, &i_nal );
-    write_headers( sc_streamer.flv_out_handle, headers );
+    write_headers( sc_streamer.flv_out_handle, sc_streamer.rtmp, headers );
 
     headers = NULL;
     free(headers);
@@ -74,7 +77,7 @@ void sc_streamer_send_frame(sc_streamer streamer, uint8_t* YUV_frame, sc_time fr
     int frame_size = x264_encoder_encode(streamer.encoder, &nals, &i_nals, &pic_in, &pic_out);
 
     if(frame_size > 0) {
-       write_frame( streamer.flv_out_handle, nals[0].p_payload, frame_size, &pic_out );
+       write_frame( streamer.flv_out_handle, streamer.rtmp, nals[0].p_payload, frame_size, &pic_out );
     }
 
     streamer.frames++;
@@ -95,14 +98,36 @@ void sc_streamer_stop(sc_streamer streamer) {
     close_RTMP_stream(streamer.flv_out_handle, streamer.rtmp);
 }
 
+void handle_packets(int fd, char *streamUri, char *roomName, sc_frame_rect rect) {
+    sc_streamer streamer;
+    sc_bytestream_packet packet = sc_bytestream_get_event(fd);
+    sc_mouse_coords coords;
+    sc_frame frame;
 
-int smackf ( const char * format, ... ) {
-    va_list args;
-    printf("I WANTED NONE OF THIS: %s", format, args);
+    printf("%i RECEIVED at %i\n", packet.header.type, packet.header.timestamp);
+
+    switch(packet.header.type) {
+        case START:
+            streamer = sc_streamer_init(streamUri, roomName, rect, packet.header.timestamp);
+            break;
+        case STOP:
+            sc_streamer_stop(streamer);
+            exit(1);
+            break;
+        case MOUSE:
+            coords = parse_mouse_coords(packet);
+            sc_streamer_send_mouse_data(streamer, coords, packet.header.timestamp);
+            break;
+        case VIDEO:
+            frame = parse_frame(packet);
+            sc_streamer_send_frame(streamer, frame.framePtr, packet.header.timestamp);
+            break;
+        case NO_DATA:
+        default:
+            printf("NOTHING\n");
+            break;    // maybe a wait is in order
+    }
 }
-
-
-// main processing loop
 
 int main(int argc, char* argv[]) {
     char c, *streamUri, *roomName;
@@ -125,36 +150,24 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    sc_streamer streamer;
+    fd_set fds;
+    int fd = fileno(stdin);
 
-    do {
-        sc_bytestream_packet packet = sc_bytestream_get_event(fileno(stdin));
-        sc_mouse_coords coords;
-        sc_frame frame;
-        tpl_hook.oops = smackf;
+    FD_ZERO(&fds);
+    FD_SET(fd, &fds);
 
-        switch(packet.header.type) {
-            case START:
-                streamer = sc_streamer_init(streamUri, roomName, rect, time(NULL));
-                break;
-            case STOP:
-                printf("STOP RECEIVED\n");
-                sc_streamer_stop(streamer);
-                exit(0);
-                break;
-            case MOUSE:
-                coords = parse_mouse_coords(packet);
-                sc_streamer_send_mouse_data(streamer, coords, packet.header.timestamp);
-                break;
-            case VIDEO:
-                frame = parse_frame(packet);
-                sc_streamer_send_frame(streamer, frame.framePtr, packet.header.timestamp);
-                break;
-            case NO_DATA:
-            default:
-                break;    // maybe a wait is in order
-        }
-    } while(TRUE);
+    // main processing loop
+    while(TRUE) {
+        struct timeval timeout = {0, 100};
+
+        int retval = select(sizeof(fds)*8, &fds, NULL, NULL, &timeout);
+        if (retval == -1)
+            printf("select() error\n");
+        else if(retval)
+            printf("asking for packet\n");
+            handle_packets(fd, streamUri, roomName, rect);
+
+    }
 
     return 0;
 }

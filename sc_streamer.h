@@ -4,7 +4,6 @@
 #define SC_TimeBase    1000.0
 
 #include <stdint.h>
-// #include <math.h>
 
 #include "bytestream.h"
 #include "flv_bytestream_ext.h"

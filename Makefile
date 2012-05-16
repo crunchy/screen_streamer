@@ -1,16 +1,15 @@
+LIB = lib
+X264 = libx264
+RTMP = librtmp/librtmp
+
 # Flags passed to the preprocessor.
-CPPFLAGS += -I./libx264 \
-	-I./librtmp \
-	-I./lib
+CPPFLAGS += -I$(X264) -I$(RTMP) -I$(LIB)
 
 # Flags passed to the C++ compiler.
 CXXFLAGS += -g -Wall -Wextra -std=c99 -arch x86_64
 
 CXX = gcc
 
-LIB = lib
-X264 = libx264
-RTMP = librtmp
 
 BUILD = screen_streamer
 
@@ -36,5 +35,5 @@ bytestream.o : $(LIB)/bytestream.c
 sc_streamer.o : $(LIB)/bytestream.h $(LIB)/tpl.h sc_streamer.h sc_streamer.c
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c sc_streamer.c
 
-screen_streamer : flv_bytestream_ext.o bytestream.o flv_bytestream.o sc_streamer.o tpl.o librtmp.a $(X264)/libx264.a
+screen_streamer : flv_bytestream_ext.o bytestream.o flv_bytestream.o sc_streamer.o tpl.o $(RTMP)/librtmp.a $(X264)/libx264.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@

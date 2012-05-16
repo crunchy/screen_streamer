@@ -1,4 +1,7 @@
 #include "sc_streamer.h"
+#include <stdarg.h>
+
+extern tpl_hook_t tpl_hook;
 
 sc_streamer sc_streamer_init(const char* stream_uri, const char* room_name, sc_frame_rect capture_rect, sc_time start_time_stamp){
     x264_param_t param;
@@ -93,6 +96,11 @@ void sc_streamer_stop(sc_streamer streamer) {
 }
 
 
+int smackf ( const char * format, ... ) {
+    va_list args;
+    printf("I WANTED NONE OF THIS: %s", format, args);
+}
+
 
 // main processing loop
 
@@ -103,10 +111,10 @@ int main(int argc, char* argv[]) {
     while ((c = getopt (argc, argv, "w:h:u:r:")) != -1) {
         switch (c) {
             case 'w':
-            rect.width = optarg;
+            rect.width = (uint16_t) *optarg;
             break;
             case 'h':
-            rect.height = optarg;
+            rect.height = (uint16_t) *optarg;
             break;
             case 'u':
             streamUri = optarg;
@@ -120,16 +128,19 @@ int main(int argc, char* argv[]) {
     sc_streamer streamer;
 
     do {
-        sc_bytestream_packet packet = sc_bytestream_get_event(stdin);
+        sc_bytestream_packet packet = sc_bytestream_get_event(fileno(stdin));
         sc_mouse_coords coords;
         sc_frame frame;
+        tpl_hook.oops = smackf;
 
         switch(packet.header.type) {
             case START:
                 streamer = sc_streamer_init(streamUri, roomName, rect, time(NULL));
                 break;
             case STOP:
+                printf("STOP RECEIVED\n");
                 sc_streamer_stop(streamer);
+                exit(0);
                 break;
             case MOUSE:
                 coords = parse_mouse_coords(packet);

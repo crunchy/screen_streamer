@@ -103,7 +103,7 @@ flv_buffer *flv_create_RTMP_writer( const char *stream_uri, RTMP *rtmp )
 
     rtmp = RTMP_Alloc();
     RTMP_Init(rtmp);
-    RTMP_SetupURL(rtmp, (char *) stream_uri);
+    RTMP_SetupURL(rtmp, stream_uri);
     RTMP_EnableWrite(rtmp); // To publish a stream, enable write support before connect
     RTMP_Connect(rtmp, NULL);
     RTMP_ConnectStream(rtmp, 0);

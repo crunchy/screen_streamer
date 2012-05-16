@@ -115,6 +115,7 @@ sc_bytestream_packet deserialize_packet(int fd) {
   }
 
   tpl_free(tn);
+  free(data.addr);
 
   return packet;
 }

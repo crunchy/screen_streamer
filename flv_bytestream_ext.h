@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <librtmp/rtmp.h>
+#include <rtmp.h>
 #include <x264cli.h>
 #include <output/flv_bytestream.h>
 

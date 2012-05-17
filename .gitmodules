@@ -3,4 +3,4 @@
 	url = git://git.videolan.org/x264.git
 [submodule "librtmp"]
 	path = librtmp
-	url = git://git.ffmpeg.org/rtmpdump
+	url = git://github.com/crunchy/rtmpdump.git

@@ -20,6 +20,12 @@ all : $(BUILD)
 clean :
 	rm -f $(BUILD) *.o
 
+$(RTMP)/librtmp.a : 
+	@cd $(RTMP) && $(MAKE) SHARED= SYS=posix CRYPTO=
+
+$(X264)/libx264.a :
+	@cd $(X264) && $(MAKE)
+
 tpl.o : $(LIB)/tpl.c
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(LIB)/tpl.c
 

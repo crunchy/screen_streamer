@@ -20,11 +20,14 @@ all : $(BUILD)
 clean :
 	rm -f $(BUILD) *.o
 
-$(RTMP)/librtmp.a : 
+$(RTMP)/librtmp.a :
 	@cd $(RTMP) && $(MAKE) SHARED= SYS=posix CRYPTO=
 
 $(X264)/libx264.a :
 	@cd $(X264) && $(MAKE)
+
+install :
+	cp screen_streamer /Users/hungerandthirst/Code/Projects/crunchy/screenshare/ScreenShareOSXClient
 
 tpl.o : $(LIB)/tpl.c
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(LIB)/tpl.c

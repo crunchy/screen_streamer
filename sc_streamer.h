@@ -22,7 +22,7 @@ typedef struct {
 } sc_streamer;
 
 sc_streamer sc_streamer_init(const char* stream_uri, const char* room_name, sc_frame_rect capture_rect, sc_time start_time_stamp);
-void sc_streamer_send_frame(sc_streamer streamer, uint8_t* YUV_frame, sc_time frame_time_stamp);
+void sc_streamer_send_frame(sc_streamer streamer, sc_frame, sc_time frame_time_stamp);
 void sc_streamer_send_mouse_data(sc_streamer streamer, sc_mouse_coords coords, sc_time coords_time_stamp);
 void sc_streamer_stop(sc_streamer streamer);
 

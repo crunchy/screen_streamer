@@ -100,22 +100,24 @@ void serialize_packet(int fd, sc_bytestream_packet packet) {
 sc_bytestream_packet deserialize_packet(int fd) {
   sc_bytestream_packet packet;
   sc_bytestream_header header;
-  tpl_bin data;
+  tpl_bin data = {NULL, 0};
 
   tpl_node *tn = tpl_map(TPL_STRUCTURE, &header, &data);
   int loaded = tpl_load(tn, TPL_FD, fd);
 
   if( loaded == -1 ) {
     packet.header = create_header(NO_DATA);
-    packet.body = create_body(NULL, 0);
   } else {
     tpl_unpack(tn, 0);
     packet.header = header;
-    packet.body = data;
   }
 
+  packet.body = data;
+
   tpl_free(tn);
-  free(data.addr);
+  if(data.addr != NULL) {
+    free(data.addr);
+  }
 
   return packet;
 }

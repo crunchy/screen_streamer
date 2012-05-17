@@ -1,6 +1,6 @@
-[submodule "libx264"]
-	path = libx264
-	url = git://git.videolan.org/x264.git
 [submodule "librtmp"]
 	path = librtmp
 	url = git://github.com/crunchy/rtmpdump.git
+[submodule "libx264"]
+	path = libx264
+	url = git://git.videolan.org/x264.git

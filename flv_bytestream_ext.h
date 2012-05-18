@@ -35,7 +35,7 @@ typedef struct
     unsigned start;
 } flv_hnd_t;
 
-flv_hnd_t *open_flv_buffer( char *stream_url );
+flv_hnd_t *open_flv_buffer();
 RTMP *open_RTMP_stream( char *stream_uri );
 int close_RTMP_stream(flv_hnd_t handle, RTMP *rtmp);
 

@@ -6,7 +6,7 @@ do {\
         return -1;\
 } while( 0 )
 
-flv_hnd_t *open_flv_buffer(char *stream_url) {
+flv_hnd_t *open_flv_buffer() {
     flv_hnd_t *p_flv = malloc( sizeof(*p_flv) );
     flv_buffer *c = malloc( sizeof(*c) );
 

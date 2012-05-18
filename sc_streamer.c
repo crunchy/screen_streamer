@@ -12,7 +12,7 @@ sc_streamer sc_streamer_init(char* stream_uri, const char* room_name, sc_frame_r
         .room_name = room_name,
         .capture_rect = capture_rect};
 
-    streamer.flv_out_handle = open_flv_buffer( stream_uri );
+    streamer.flv_out_handle = open_flv_buffer();
     streamer.rtmp = open_RTMP_stream( stream_uri );
 
     x264_param_default_preset(&param, "ultrafast", "zerolatency");
@@ -86,7 +86,7 @@ void sc_streamer_send_frame(sc_streamer streamer, sc_frame frame, sc_time frame_
     free(YUV_frame);
     nals = NULL;
     free(nals);
-//    x264_picture_clean(&pic_in);
+    // x264_picture_clean(&pic_in);
 }
 
 // TODO: get room name
@@ -134,7 +134,7 @@ int main(int argc, char* argv[]) {
     char c, *streamUri, *roomName, *inFile;
     sc_frame_rect rect;
 
-    while ((c = getopt (argc, argv, "w:h:u:r:")) != -1) {
+    while ((c = getopt (argc, argv, "w:h:u:r:f:")) != -1) {
         switch (c) {
             case 'w':
                 rect.width = (uint16_t) atoi(optarg);
@@ -157,7 +157,8 @@ int main(int argc, char* argv[]) {
 
     printf("Started streamer with width: %i, height: %i, URI: %s, roomName: %s\n", rect.width, rect.height, streamUri, roomName);
 
-    int fd = fileno(stdin);
+    FILE *stream = freopen(inFile, "r", stdin);
+    int fd = fileno(stream);
 
     // main processing loop
     while(TRUE) {

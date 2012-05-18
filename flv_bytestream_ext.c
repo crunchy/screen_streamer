@@ -6,12 +6,9 @@ do {\
         return -1;\
 } while( 0 )
 
-RTMP *open_RTMP_stream(const char *stream_uri, flv_hnd_t *p_handle)
-{
+flv_hnd_t *open_flv_buffer(char *stream_url) {
     flv_hnd_t *p_flv = malloc( sizeof(*p_flv) );
     flv_buffer *c = malloc( sizeof(*c) );
-
-    p_handle = NULL;
 
     if( !p_flv ) {
         free(p_flv);
@@ -26,8 +23,11 @@ RTMP *open_RTMP_stream(const char *stream_uri, flv_hnd_t *p_handle)
     memset( c, 0, sizeof(*c) );
 
     p_flv->c = c;
-    p_handle = p_flv;
+    return p_flv;
+}
 
+RTMP *open_RTMP_stream(char *stream_uri)
+{
     RTMP *rtmp = RTMP_Alloc();
     RTMP_Init(rtmp);
     RTMP_SetupURL(rtmp, stream_uri);
@@ -47,7 +47,7 @@ int close_RTMP_stream(flv_hnd_t handle, RTMP *rtmp)
     RTMP_Free(rtmp);
 
     fclose( c->fp );
-    free( p_flv );
+    // free( p_flv );
     free( c );
 
     return 0;

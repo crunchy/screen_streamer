@@ -4,23 +4,22 @@
 
 extern tpl_hook_t tpl_hook;
 
-sc_streamer sc_streamer_init(const char* stream_uri, const char* room_name, sc_frame_rect capture_rect, sc_time start_time_stamp){
+sc_streamer sc_streamer_init(char* stream_uri, const char* room_name, sc_frame_rect capture_rect, sc_time start_time_stamp){
     x264_param_t param;
 
-    sc_streamer sc_streamer = {.start_time_stamp = start_time_stamp,
+    sc_streamer streamer = {.start_time_stamp = start_time_stamp,
         .stream_uri = stream_uri,
         .room_name = room_name,
         .capture_rect = capture_rect};
 
-    // sc_streamer.rtmp = open_RTMP_stream( stream_uri, &sc_streamer.flv_out_handle );
-
-    // printf("rtmp %p\n", sc_streamer.rtmp);
+    streamer.flv_out_handle = open_flv_buffer( stream_uri );
+    streamer.rtmp = open_RTMP_stream( stream_uri );
 
     x264_param_default_preset(&param, "ultrafast", "zerolatency");
     x264_param_apply_profile(&param, "baseline");
 
-    param.i_log_level  = X264_LOG_DEBUG;
-    param.psz_dump_yuv = (char *)"/tmp/dump.y4m";
+    param.i_log_level  = X264_LOG_INFO;
+    // param.psz_dump_yuv = (char *)"/tmp/dump.y4m";
 
     param.b_vfr_input = 1;
     param.i_threads = 4;
@@ -42,20 +41,20 @@ sc_streamer sc_streamer_init(const char* stream_uri, const char* room_name, sc_f
     param.b_annexb = 0;
     param.i_bframe = 0;
 
-    sc_streamer.encoder = x264_encoder_open(&param);
+    streamer.encoder = x264_encoder_open(&param);
 
-    // set_param( sc_streamer.flv_out_handle, &param );
+    set_param( *streamer.flv_out_handle, &param );
 
     x264_nal_t *headers;
     int i_nal;
 
-    x264_encoder_headers( sc_streamer.encoder, &headers, &i_nal );
-    // write_headers( sc_streamer.flv_out_handle, sc_streamer.rtmp, headers );
+    x264_encoder_headers( streamer.encoder, &headers, &i_nal );
+    write_headers( *streamer.flv_out_handle, streamer.rtmp, headers );
 
     headers = NULL;
     free(headers);
 
-    return sc_streamer;
+    return streamer;
 }
 
 void sc_streamer_send_frame(sc_streamer streamer, sc_frame frame, sc_time frame_time_stamp) {
@@ -76,30 +75,28 @@ void sc_streamer_send_frame(sc_streamer streamer, sc_frame frame, sc_time frame_
     x264_nal_t* nals;
     int i_nals;
 
-    printf("frame size %i at %p, %p\n", frame.size, frame.framePtr, YUV_frame);
-
     int frame_size = x264_encoder_encode(streamer.encoder, &nals, &i_nals, &pic_in, &pic_out);
 
-    // if(frame_size > 0) {
-    //    // write_frame( streamer.flv_out_handle, streamer.rtmp, nals[0].p_payload, frame_size, &pic_out );
-    // }
+    if(frame_size > 0) {
+       write_frame( *streamer.flv_out_handle, streamer.rtmp, nals[0].p_payload, frame_size, &pic_out );
+    }
 
-    // streamer.frames++;
-    // YUV_frame = NULL;
-    // free(YUV_frame);
-    // nals = NULL;
-    // free(nals);
-    // x264_picture_clean(&pic_in);
+    streamer.frames++;
+    YUV_frame = NULL;
+    free(YUV_frame);
+    nals = NULL;
+    free(nals);
+//    x264_picture_clean(&pic_in);
 }
 
 // TODO: get room name
 void sc_streamer_send_mouse_data(sc_streamer streamer, sc_mouse_coords coords, sc_time coords_time_stamp) {
-    // send_invoke( streamer.rtmp, coords.x, coords.y, coords_time_stamp, streamer.room_name );
+    send_invoke( streamer.rtmp, coords.x, coords.y, coords_time_stamp, streamer.room_name );
 }
 
 void sc_streamer_stop(sc_streamer streamer) {
     x264_encoder_close(streamer.encoder);
-    // close_RTMP_stream(streamer.flv_out_handle, streamer.rtmp);
+    close_RTMP_stream(*streamer.flv_out_handle, streamer.rtmp);
 }
 
 void handle_packets(int fd, char *streamUri, char *roomName, sc_frame_rect rect) {
@@ -107,18 +104,6 @@ void handle_packets(int fd, char *streamUri, char *roomName, sc_frame_rect rect)
     sc_bytestream_packet packet = sc_bytestream_get_event(fd);
     sc_mouse_coords coords;
     sc_frame frame;
-
-    FILE *fp = fopen("/tmp/frame.y4m", "wb+");
-
-    for(int i=0; i<packet.body.sz; i++) {
-        void *mem = packet.body.addr+i;
-        char *meme = (char *)mem;
-
-        fprintf(fp, "%s", meme);
-        fflush(fp);
-    }
-
-    fclose(fp);
 
     printf("%i RECEIVED at %i\n", packet.header.type, packet.header.timestamp);
 
@@ -149,7 +134,7 @@ int main(int argc, char* argv[]) {
     char c, *streamUri, *roomName, *inFile;
     sc_frame_rect rect;
 
-    while ((c = getopt (argc, argv, "w:h:u:r:f:")) != -1) {
+    while ((c = getopt (argc, argv, "w:h:u:r:")) != -1) {
         switch (c) {
             case 'w':
                 rect.width = (uint16_t) atoi(optarg);
@@ -163,16 +148,21 @@ int main(int argc, char* argv[]) {
             case 'r':
                 roomName = optarg;
                 break;
-            case 'f':
-                inFile = optarg;
-                break;
+            // case 'f':
+            //     inFile = optarg;
+            //     break;
+
         }
     }
-    
-    printf("Started streamer with width: %i, height: %i, URI: %s, roomName: %s, file: %s \n", rect.width, rect.height, streamUri, roomName, inFile);
+
+    printf("Started streamer with width: %i, height: %i, URI: %s, roomName: %s\n", rect.width, rect.height, streamUri, roomName);
 
     fd_set fds;
-    FILE *stream = freopen(inFile, "r", stdin);
+    FILE *stream;
+
+    // stream = freopen(inFile, "r", stdin);
+    stream = stdin;
+
     int fd = fileno(stream);
 
     FD_ZERO(&fds);
@@ -186,7 +176,6 @@ int main(int argc, char* argv[]) {
         if (retval == -1)
             printf("select() error\n");
         else if(retval)
-            printf("asking for packet\n");
             handle_packets(fd, streamUri, roomName, rect);
 
     }

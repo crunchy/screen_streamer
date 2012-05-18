@@ -148,36 +148,20 @@ int main(int argc, char* argv[]) {
             case 'r':
                 roomName = optarg;
                 break;
-            // case 'f':
-            //     inFile = optarg;
-            //     break;
+            case 'f':
+                inFile = optarg;
+                break;
 
         }
     }
 
     printf("Started streamer with width: %i, height: %i, URI: %s, roomName: %s\n", rect.width, rect.height, streamUri, roomName);
 
-    fd_set fds;
-    FILE *stream;
-
-    // stream = freopen(inFile, "r", stdin);
-    stream = stdin;
-
-    int fd = fileno(stream);
-
-    FD_ZERO(&fds);
-    FD_SET(fd, &fds);
+    int fd = fileno(stdin);
 
     // main processing loop
     while(TRUE) {
-        struct timeval timeout = {0, 100};
-
-        int retval = select(sizeof(fds)*8, &fds, NULL, NULL, &timeout);
-        if (retval == -1)
-            printf("select() error\n");
-        else if(retval)
-            handle_packets(fd, streamUri, roomName, rect);
-
+        handle_packets(fd, streamUri, roomName, rect);
     }
 
     return 0;

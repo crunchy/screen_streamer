@@ -134,7 +134,7 @@ int main(int argc, char* argv[]) {
     char c, *streamUri, *roomName, *inFile;
     sc_frame_rect rect;
 
-    while ((c = getopt (argc, argv, "w:h:u:r:f:")) != -1) {
+    while ((c = getopt (argc, argv, "w:h:u:r:")) != -1) {
         switch (c) {
             case 'w':
                 rect.width = (uint16_t) atoi(optarg);
@@ -148,17 +148,17 @@ int main(int argc, char* argv[]) {
             case 'r':
                 roomName = optarg;
                 break;
-            case 'f':
-                inFile = optarg;
-                break;
+            // case 'f':
+            //     inFile = optarg;
+            //     break;
 
         }
     }
 
     printf("Started streamer with width: %i, height: %i, URI: %s, roomName: %s\n", rect.width, rect.height, streamUri, roomName);
 
-    FILE *stream = freopen(inFile, "r", stdin);
-    int fd = fileno(stream);
+    // FILE *stream = freopen(inFile, "r", stdin);
+    int fd = fileno(stdin);
 
     // main processing loop
     while(TRUE) {

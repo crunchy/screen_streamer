@@ -152,10 +152,10 @@ int main(int argc, char* argv[]) {
     while ((c = getopt (argc, argv, "w:h:u:r:")) != -1) {
         switch (c) {
             case 'w':
-            rect.width = (uint16_t) *optarg;
+            rect.width = (uint16_t) atoi(optarg);
             break;
             case 'h':
-            rect.height = (uint16_t) *optarg;
+            rect.height = (uint16_t) atoi(optarg);
             break;
             case 'u':
             streamUri = optarg;
@@ -165,6 +165,8 @@ int main(int argc, char* argv[]) {
             break;
         }
     }
+    
+    printf("Started streamer with width: %i, height: %i, URI: %s, roomName: %s \n", rect.width, rect.height, streamUri, roomName);
 
     fd_set fds;
     int fd = fileno(stdin);

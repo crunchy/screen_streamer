@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0362EE5E1565C79D00E5409E /* flv_bytestream.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E3B15659A46002A26CF /* flv_bytestream.c */; };
+		0362EE5F1565CDA800E5409E /* runnableStream.tpl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30B26E6515659A46002A26CF /* runnableStream.tpl */; };
 		30B26E6815659A47002A26CF /* flv_bytestream_ext.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D2415659A46002A26CF /* flv_bytestream_ext.c */; };
 		30B26E6915659A47002A26CF /* bytestream.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D2715659A46002A26CF /* bytestream.c */; };
 		30B26E6B15659A47002A26CF /* tpl.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D2A15659A46002A26CF /* tpl.c */; };
@@ -36,12 +37,13 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		30B26AF01565987B002A26CF /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 16;
 			files = (
+				0362EE5F1565CDA800E5409E /* runnableStream.tpl in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -1026,6 +1028,11 @@
 		30B26AFD1565987B002A26CF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/lib\"",
+					"\"$(SRCROOT)/librtmp/librtmp\"",
+					"\"$(SRCROOT)/libx264\"",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/librtmp/librtmp\"",
@@ -1039,6 +1046,11 @@
 		30B26AFE1565987B002A26CF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/lib\"",
+					"\"$(SRCROOT)/librtmp/librtmp\"",
+					"\"$(SRCROOT)/libx264\"",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/librtmp/librtmp\"",

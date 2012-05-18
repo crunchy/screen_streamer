@@ -27,7 +27,7 @@ $(X264)/libx264.a :
 	@cd $(X264) && $(MAKE)
 
 install :
-	cp screen_streamer /Users/hungerandthirst/Code/Projects/crunchy/screenshare/ScreenShareOSXClient
+	cp screen_streamer ../screenshare/ScreenShareOSXClient
 
 tpl.o : $(LIB)/tpl.c
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(LIB)/tpl.c

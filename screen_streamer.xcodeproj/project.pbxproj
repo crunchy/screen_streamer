@@ -7,225 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0362EE5E1565C79D00E5409E /* flv_bytestream.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E3B15659A46002A26CF /* flv_bytestream.c */; };
 		30B26E6815659A47002A26CF /* flv_bytestream_ext.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D2415659A46002A26CF /* flv_bytestream_ext.c */; };
 		30B26E6915659A47002A26CF /* bytestream.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D2715659A46002A26CF /* bytestream.c */; };
-		30B26E6A15659A47002A26CF /* bytestream.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D2915659A46002A26CF /* bytestream.o */; };
 		30B26E6B15659A47002A26CF /* tpl.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D2A15659A46002A26CF /* tpl.c */; };
-		30B26E6C15659A47002A26CF /* amf.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D3015659A46002A26CF /* amf.c */; };
-		30B26E6D15659A47002A26CF /* amf.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D3215659A46002A26CF /* amf.o */; };
-		30B26E6E15659A47002A26CF /* hashswf.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D3815659A46002A26CF /* hashswf.c */; };
-		30B26E6F15659A47002A26CF /* hashswf.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D3915659A46002A26CF /* hashswf.o */; };
 		30B26E7015659A47002A26CF /* librtmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D3D15659A46002A26CF /* librtmp.a */; };
-		30B26E7115659A47002A26CF /* log.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D3F15659A46002A26CF /* log.c */; };
-		30B26E7215659A47002A26CF /* log.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D4115659A46002A26CF /* log.o */; };
-		30B26E7315659A47002A26CF /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D4215659A46002A26CF /* Makefile */; };
-		30B26E7415659A47002A26CF /* parseurl.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D4315659A46002A26CF /* parseurl.c */; };
-		30B26E7515659A47002A26CF /* parseurl.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D4415659A46002A26CF /* parseurl.o */; };
-		30B26E7615659A47002A26CF /* rtmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D4515659A46002A26CF /* rtmp.c */; };
-		30B26E7715659A47002A26CF /* rtmp.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D4715659A46002A26CF /* rtmp.o */; };
-		30B26E7D15659A47002A26CF /* thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D5315659A46002A26CF /* thread.c */; };
-		30B26E7E15659A47002A26CF /* asm.S in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D5B15659A46002A26CF /* asm.S */; };
-		30B26E7F15659A47002A26CF /* cpu-a.S in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D5C15659A46002A26CF /* cpu-a.S */; };
-		30B26E8015659A47002A26CF /* dct-a.S in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D5D15659A46002A26CF /* dct-a.S */; };
-		30B26E8115659A47002A26CF /* deblock-a.S in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D5F15659A46002A26CF /* deblock-a.S */; };
-		30B26E8215659A47002A26CF /* mc-a.S in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D6015659A46002A26CF /* mc-a.S */; };
-		30B26E8315659A47002A26CF /* mc-c.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D6115659A46002A26CF /* mc-c.c */; };
-		30B26E8415659A47002A26CF /* pixel-a.S in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D6315659A46002A26CF /* pixel-a.S */; };
-		30B26E8515659A47002A26CF /* predict-a.S in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D6515659A46002A26CF /* predict-a.S */; };
-		30B26E8615659A47002A26CF /* predict-c.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D6615659A46002A26CF /* predict-c.c */; };
-		30B26E8715659A47002A26CF /* quant-a.S in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D6815659A46002A26CF /* quant-a.S */; };
-		30B26E8815659A47002A26CF /* bitstream.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D6A15659A46002A26CF /* bitstream.c */; };
-		30B26E8915659A47002A26CF /* bitstream.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D6C15659A46002A26CF /* bitstream.o */; };
-		30B26E8A15659A47002A26CF /* cabac.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D6D15659A46002A26CF /* cabac.c */; };
-		30B26E8B15659A47002A26CF /* cabac.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D6F15659A46002A26CF /* cabac.o */; };
-		30B26E8C15659A47002A26CF /* common.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D7015659A46002A26CF /* common.c */; };
-		30B26E8D15659A47002A26CF /* common.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D7215659A46002A26CF /* common.o */; };
-		30B26E8E15659A47002A26CF /* cpu.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D7315659A46002A26CF /* cpu.c */; };
-		30B26E8F15659A47002A26CF /* cpu.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D7515659A46002A26CF /* cpu.o */; };
-		30B26E9015659A47002A26CF /* dct.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D7615659A46002A26CF /* dct.c */; };
-		30B26E9115659A47002A26CF /* dct.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D7815659A46002A26CF /* dct.o */; };
-		30B26E9215659A47002A26CF /* deblock.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D7915659A46002A26CF /* deblock.c */; };
-		30B26E9315659A47002A26CF /* deblock.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D7A15659A46002A26CF /* deblock.o */; };
-		30B26E9415659A47002A26CF /* display-x11.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D7B15659A46002A26CF /* display-x11.c */; };
-		30B26E9515659A47002A26CF /* frame.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D7D15659A46002A26CF /* frame.c */; };
-		30B26E9615659A47002A26CF /* frame.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D7F15659A46002A26CF /* frame.o */; };
-		30B26E9715659A47002A26CF /* macroblock.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D8015659A46002A26CF /* macroblock.c */; };
-		30B26E9815659A47002A26CF /* macroblock.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D8215659A46002A26CF /* macroblock.o */; };
-		30B26E9915659A47002A26CF /* mc.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D8315659A46002A26CF /* mc.c */; };
-		30B26E9A15659A47002A26CF /* mc.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D8515659A46002A26CF /* mc.o */; };
-		30B26E9B15659A47002A26CF /* mvpred.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D8615659A46002A26CF /* mvpred.c */; };
-		30B26E9C15659A47002A26CF /* mvpred.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D8715659A46002A26CF /* mvpred.o */; };
-		30B26E9D15659A47002A26CF /* osdep.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D8815659A46002A26CF /* osdep.c */; };
-		30B26E9E15659A47002A26CF /* osdep.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D8A15659A46002A26CF /* osdep.o */; };
-		30B26E9F15659A47002A26CF /* pixel.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D8B15659A46002A26CF /* pixel.c */; };
-		30B26EA015659A47002A26CF /* pixel.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D8D15659A46002A26CF /* pixel.o */; };
-		30B26EA115659A47002A26CF /* dct.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D8F15659A46002A26CF /* dct.c */; };
-		30B26EA215659A47002A26CF /* deblock.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D9115659A46002A26CF /* deblock.c */; };
-		30B26EA315659A47002A26CF /* mc.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D9215659A46002A26CF /* mc.c */; };
-		30B26EA415659A47002A26CF /* pixel.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D9415659A46002A26CF /* pixel.c */; };
-		30B26EA515659A47002A26CF /* predict.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D9715659A46002A26CF /* predict.c */; };
-		30B26EA615659A47002A26CF /* quant.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D9915659A46002A26CF /* quant.c */; };
-		30B26EA715659A47002A26CF /* predict.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D9B15659A46002A26CF /* predict.c */; };
-		30B26EA815659A47002A26CF /* predict.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26D9D15659A46002A26CF /* predict.o */; };
-		30B26EA915659A47002A26CF /* quant.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D9E15659A46002A26CF /* quant.c */; };
-		30B26EAA15659A47002A26CF /* quant.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DA015659A46002A26CF /* quant.o */; };
-		30B26EAB15659A47002A26CF /* rectangle.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DA115659A46002A26CF /* rectangle.c */; };
-		30B26EAC15659A47002A26CF /* rectangle.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DA315659A46002A26CF /* rectangle.o */; };
-		30B26EAD15659A47002A26CF /* set.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DA415659A46002A26CF /* set.c */; };
-		30B26EAE15659A47002A26CF /* set.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DA615659A46002A26CF /* set.o */; };
-		30B26EAF15659A47002A26CF /* pixel.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DA815659A46002A26CF /* pixel.asm */; };
-		30B26EB015659A47002A26CF /* threadpool.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DAA15659A46002A26CF /* threadpool.c */; };
-		30B26EB115659A47002A26CF /* threadpool.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DAC15659A46002A26CF /* threadpool.o */; };
-		30B26EB215659A47002A26CF /* visualize.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DAD15659A46002A26CF /* visualize.c */; };
-		30B26EB315659A47002A26CF /* vlc.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DAF15659A46002A26CF /* vlc.c */; };
-		30B26EB415659A47002A26CF /* vlc.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DB015659A46002A26CF /* vlc.o */; };
-		30B26EB515659A47002A26CF /* win32thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DB115659A46002A26CF /* win32thread.c */; };
-		30B26EB615659A47002A26CF /* bitstream-a.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DB415659A46002A26CF /* bitstream-a.asm */; };
-		30B26EB715659A47002A26CF /* bitstream-a.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DB515659A46002A26CF /* bitstream-a.o */; };
-		30B26EB815659A47002A26CF /* cabac-a.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DB615659A46002A26CF /* cabac-a.asm */; };
-		30B26EB915659A47002A26CF /* cabac-a.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DB715659A46002A26CF /* cabac-a.o */; };
-		30B26EBA15659A47002A26CF /* const-a.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DB815659A46002A26CF /* const-a.asm */; };
-		30B26EBB15659A47002A26CF /* const-a.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DB915659A46002A26CF /* const-a.o */; };
-		30B26EBC15659A47002A26CF /* cpu-a.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DBA15659A46002A26CF /* cpu-a.asm */; };
-		30B26EBD15659A47002A26CF /* cpu-a.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DBB15659A46002A26CF /* cpu-a.o */; };
-		30B26EBE15659A47002A26CF /* dct-32.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DBC15659A46002A26CF /* dct-32.asm */; };
-		30B26EBF15659A47002A26CF /* dct-64.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DBD15659A46002A26CF /* dct-64.asm */; };
-		30B26EC015659A47002A26CF /* dct-64.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DBE15659A46002A26CF /* dct-64.o */; };
-		30B26EC115659A47002A26CF /* dct-a.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DBF15659A46002A26CF /* dct-a.asm */; };
-		30B26EC215659A47002A26CF /* dct-a.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DC015659A46002A26CF /* dct-a.o */; };
-		30B26EC315659A47002A26CF /* deblock-a.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DC215659A46002A26CF /* deblock-a.asm */; };
-		30B26EC415659A47002A26CF /* deblock-a.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DC315659A46002A26CF /* deblock-a.o */; };
-		30B26EC515659A47002A26CF /* mc-a.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DC415659A46002A26CF /* mc-a.asm */; };
-		30B26EC615659A47002A26CF /* mc-a.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DC515659A46002A26CF /* mc-a.o */; };
-		30B26EC715659A47002A26CF /* mc-a2.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DC615659A46002A26CF /* mc-a2.asm */; };
-		30B26EC815659A47002A26CF /* mc-a2.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DC715659A46002A26CF /* mc-a2.o */; };
-		30B26EC915659A47002A26CF /* mc-c.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DC815659A46002A26CF /* mc-c.c */; };
-		30B26ECA15659A47002A26CF /* mc-c.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DC915659A46002A26CF /* mc-c.o */; };
-		30B26ECB15659A47002A26CF /* pixel-32.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DCB15659A46002A26CF /* pixel-32.asm */; };
-		30B26ECC15659A47002A26CF /* pixel-a.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DCC15659A46002A26CF /* pixel-a.asm */; };
-		30B26ECD15659A47002A26CF /* pixel-a.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DCD15659A46002A26CF /* pixel-a.o */; };
-		30B26ECE15659A47002A26CF /* predict-a.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DCF15659A46002A26CF /* predict-a.asm */; };
-		30B26ECF15659A47002A26CF /* predict-a.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DD015659A46002A26CF /* predict-a.o */; };
-		30B26ED015659A47002A26CF /* predict-c.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DD115659A46002A26CF /* predict-c.c */; };
-		30B26ED115659A47002A26CF /* predict-c.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DD215659A46002A26CF /* predict-c.o */; };
-		30B26ED215659A47002A26CF /* quant-a.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DD415659A46002A26CF /* quant-a.asm */; };
-		30B26ED315659A47002A26CF /* quant-a.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DD515659A46002A26CF /* quant-a.o */; };
-		30B26ED415659A47002A26CF /* sad-a.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DD715659A46002A26CF /* sad-a.asm */; };
-		30B26ED515659A47002A26CF /* sad-a.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DD815659A46002A26CF /* sad-a.o */; };
-		30B26ED615659A47002A26CF /* sad16-a.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DD915659A46002A26CF /* sad16-a.asm */; };
-		30B26ED715659A47002A26CF /* trellis-64.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DDA15659A46002A26CF /* trellis-64.asm */; };
-		30B26ED815659A47002A26CF /* trellis-64.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DDB15659A46002A26CF /* trellis-64.o */; };
-		30B26ED915659A47002A26CF /* x86inc.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DDD15659A46002A26CF /* x86inc.asm */; };
-		30B26EDA15659A47002A26CF /* x86util.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DDE15659A46002A26CF /* x86util.asm */; };
-		30B26EDB15659A47002A26CF /* config.mak in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DE215659A46002A26CF /* config.mak */; };
-		30B26EDC15659A47002A26CF /* analyse.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DED15659A46002A26CF /* analyse.c */; };
-		30B26EDD15659A47002A26CF /* analyse.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DEF15659A46002A26CF /* analyse.o */; };
-		30B26EDE15659A47002A26CF /* cabac.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DF015659A46002A26CF /* cabac.c */; };
-		30B26EDF15659A47002A26CF /* cabac.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DF115659A46002A26CF /* cabac.o */; };
-		30B26EE015659A47002A26CF /* cavlc.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DF215659A46002A26CF /* cavlc.c */; };
-		30B26EE115659A47002A26CF /* cavlc.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DF315659A46002A26CF /* cavlc.o */; };
-		30B26EE215659A47002A26CF /* encoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DF415659A46002A26CF /* encoder.c */; };
-		30B26EE315659A47002A26CF /* encoder.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DF515659A46002A26CF /* encoder.o */; };
-		30B26EE415659A47002A26CF /* lookahead.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DF615659A46002A26CF /* lookahead.c */; };
-		30B26EE515659A47002A26CF /* lookahead.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DF715659A46002A26CF /* lookahead.o */; };
-		30B26EE615659A47002A26CF /* macroblock.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DF815659A46002A26CF /* macroblock.c */; };
-		30B26EE715659A47002A26CF /* macroblock.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DFA15659A46002A26CF /* macroblock.o */; };
-		30B26EE815659A47002A26CF /* me.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DFB15659A46002A26CF /* me.c */; };
-		30B26EE915659A47002A26CF /* me.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26DFD15659A46002A26CF /* me.o */; };
-		30B26EEA15659A47002A26CF /* ratecontrol.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26DFE15659A46002A26CF /* ratecontrol.c */; };
-		30B26EEB15659A47002A26CF /* ratecontrol.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E0015659A46002A26CF /* ratecontrol.o */; };
-		30B26EEC15659A47002A26CF /* rdo.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E0115659A46002A26CF /* rdo.c */; };
-		30B26EED15659A47002A26CF /* set.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E0215659A46002A26CF /* set.c */; };
-		30B26EEE15659A47002A26CF /* set.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E0415659A46002A26CF /* set.o */; };
-		30B26EEF15659A47002A26CF /* slicetype.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E0515659A46002A26CF /* slicetype.c */; };
-		30B26EF015659A47002A26CF /* getopt.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E0915659A46002A26CF /* getopt.c */; };
-		30B26EF115659A47002A26CF /* filters.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E0E15659A46002A26CF /* filters.c */; };
-		30B26EF215659A47002A26CF /* filters.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E1015659A46002A26CF /* filters.o */; };
-		30B26EF315659A47002A26CF /* cache.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E1215659A46002A26CF /* cache.c */; };
-		30B26EF415659A47002A26CF /* cache.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E1315659A46002A26CF /* cache.o */; };
-		30B26EF515659A47002A26CF /* crop.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E1415659A46002A26CF /* crop.c */; };
-		30B26EF615659A47002A26CF /* crop.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E1515659A46002A26CF /* crop.o */; };
-		30B26EF715659A47002A26CF /* depth.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E1615659A46002A26CF /* depth.c */; };
-		30B26EF815659A47002A26CF /* depth.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E1715659A46002A26CF /* depth.o */; };
-		30B26EF915659A47002A26CF /* fix_vfr_pts.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E1815659A46002A26CF /* fix_vfr_pts.c */; };
-		30B26EFA15659A47002A26CF /* fix_vfr_pts.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E1915659A46002A26CF /* fix_vfr_pts.o */; };
-		30B26EFB15659A47002A26CF /* internal.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E1A15659A46002A26CF /* internal.c */; };
-		30B26EFC15659A47002A26CF /* internal.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E1C15659A46002A26CF /* internal.o */; };
-		30B26EFD15659A47002A26CF /* resize.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E1D15659A46002A26CF /* resize.c */; };
-		30B26EFE15659A47002A26CF /* resize.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E1E15659A46002A26CF /* resize.o */; };
-		30B26EFF15659A47002A26CF /* select_every.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E1F15659A46002A26CF /* select_every.c */; };
-		30B26F0015659A47002A26CF /* select_every.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E2015659A46002A26CF /* select_every.o */; };
-		30B26F0115659A47002A26CF /* source.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E2115659A46002A26CF /* source.c */; };
-		30B26F0215659A47002A26CF /* source.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E2215659A46002A26CF /* source.o */; };
-		30B26F0315659A47002A26CF /* video.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E2315659A46002A26CF /* video.c */; };
-		30B26F0415659A47002A26CF /* video.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E2515659A46002A26CF /* video.o */; };
-		30B26F0515659A47002A26CF /* avs.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E2715659A46002A26CF /* avs.c */; };
-		30B26F0615659A47002A26CF /* ffms.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E2815659A46002A26CF /* ffms.c */; };
-		30B26F0715659A47002A26CF /* input.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E2915659A46002A26CF /* input.c */; };
-		30B26F0815659A47002A26CF /* input.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E2B15659A46002A26CF /* input.o */; };
-		30B26F0915659A47002A26CF /* lavf.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E2C15659A46002A26CF /* lavf.c */; };
-		30B26F0A15659A47002A26CF /* lavf.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E2D15659A46002A26CF /* lavf.o */; };
-		30B26F0B15659A47002A26CF /* raw.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E2E15659A46002A26CF /* raw.c */; };
-		30B26F0C15659A47002A26CF /* raw.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E2F15659A46002A26CF /* raw.o */; };
-		30B26F0D15659A47002A26CF /* thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E3015659A46002A26CF /* thread.c */; };
-		30B26F0E15659A47002A26CF /* thread.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E3115659A46002A26CF /* thread.o */; };
-		30B26F0F15659A47002A26CF /* timecode.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E3215659A46002A26CF /* timecode.c */; };
-		30B26F1015659A47002A26CF /* timecode.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E3315659A46002A26CF /* timecode.o */; };
-		30B26F1115659A47002A26CF /* y4m.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E3415659A46002A26CF /* y4m.c */; };
-		30B26F1215659A47002A26CF /* y4m.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E3515659A46002A26CF /* y4m.o */; };
 		30B26F1315659A47002A26CF /* libx264.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E3615659A46002A26CF /* libx264.a */; };
-		30B26F1415659A47002A26CF /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E3715659A46002A26CF /* Makefile */; };
-		30B26F1515659A47002A26CF /* flv.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E3915659A46002A26CF /* flv.c */; };
-		30B26F1615659A47002A26CF /* flv.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E3A15659A46002A26CF /* flv.o */; };
-		30B26F1715659A47002A26CF /* flv_bytestream.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E3B15659A46002A26CF /* flv_bytestream.c */; };
-		30B26F1815659A47002A26CF /* flv_bytestream.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E3D15659A46002A26CF /* flv_bytestream.o */; };
-		30B26F1915659A47002A26CF /* matroska.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E3E15659A46002A26CF /* matroska.c */; };
-		30B26F1A15659A47002A26CF /* matroska.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E3F15659A46002A26CF /* matroska.o */; };
-		30B26F1B15659A47002A26CF /* matroska_ebml.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E4015659A46002A26CF /* matroska_ebml.c */; };
-		30B26F1C15659A47002A26CF /* matroska_ebml.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E4215659A46002A26CF /* matroska_ebml.o */; };
-		30B26F1D15659A47002A26CF /* mp4.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E4315659A46002A26CF /* mp4.c */; };
-		30B26F1E15659A47002A26CF /* raw.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E4515659A46002A26CF /* raw.c */; };
-		30B26F1F15659A47002A26CF /* raw.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E4615659A46002A26CF /* raw.o */; };
-		30B26F2015659A47002A26CF /* checkasm-a.asm in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E4815659A46002A26CF /* checkasm-a.asm */; };
-		30B26F2115659A47002A26CF /* checkasm.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E4915659A46002A26CF /* checkasm.c */; };
-		30B26F2215659A47002A26CF /* xyuv.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E5815659A46002A26CF /* xyuv.c */; };
-		30B26F2315659A47002A26CF /* x264.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E5B15659A46002A26CF /* x264.c */; };
-		30B26F2415659A47002A26CF /* x264.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B26E5D15659A46002A26CF /* x264.o */; };
-		30B26F2515659A47002A26CF /* x264dll.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E6115659A46002A26CF /* x264dll.c */; };
-		30B26F2615659A47002A26CF /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E6315659A46002A26CF /* Makefile */; };
 		30B26F2715659A47002A26CF /* sc_streamer.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E6615659A46002A26CF /* sc_streamer.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		30B26F3015659AF3002A26CF /* PBXContainerItemProxy */ = {
+		0362EE5A1565C70A00E5409E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 30B26AE91565987B002A26CF /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 30B26F2815659ADD002A26CF;
 			remoteInfo = librtmp;
 		};
-		30B26F3215659AF3002A26CF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 30B26AE91565987B002A26CF /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 30B26F2C15659AE8002A26CF;
-			remoteInfo = libx264;
-		};
-		30B26F341565A434002A26CF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 30B26AE91565987B002A26CF /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 30B26D08156598F6002A26CF;
-			remoteInfo = screen_streamer_xcode;
-		};
-		30B26F361565A434002A26CF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 30B26AE91565987B002A26CF /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 30B26F2815659ADD002A26CF;
-			remoteInfo = librtmp;
-		};
-		30B26F381565A434002A26CF /* PBXContainerItemProxy */ = {
+		0362EE5C1565C70E00E5409E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 30B26AE91565987B002A26CF /* Project object */;
 			proxyType = 1;
@@ -560,79 +359,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				30B26E6A15659A47002A26CF /* bytestream.o in Frameworks */,
-				30B26E6D15659A47002A26CF /* amf.o in Frameworks */,
-				30B26E6F15659A47002A26CF /* hashswf.o in Frameworks */,
 				30B26E7015659A47002A26CF /* librtmp.a in Frameworks */,
-				30B26E7215659A47002A26CF /* log.o in Frameworks */,
-				30B26E7515659A47002A26CF /* parseurl.o in Frameworks */,
-				30B26E7715659A47002A26CF /* rtmp.o in Frameworks */,
-				30B26E8915659A47002A26CF /* bitstream.o in Frameworks */,
-				30B26E8B15659A47002A26CF /* cabac.o in Frameworks */,
-				30B26E8D15659A47002A26CF /* common.o in Frameworks */,
-				30B26E8F15659A47002A26CF /* cpu.o in Frameworks */,
-				30B26E9115659A47002A26CF /* dct.o in Frameworks */,
-				30B26E9315659A47002A26CF /* deblock.o in Frameworks */,
-				30B26E9615659A47002A26CF /* frame.o in Frameworks */,
-				30B26E9815659A47002A26CF /* macroblock.o in Frameworks */,
-				30B26E9A15659A47002A26CF /* mc.o in Frameworks */,
-				30B26E9C15659A47002A26CF /* mvpred.o in Frameworks */,
-				30B26E9E15659A47002A26CF /* osdep.o in Frameworks */,
-				30B26EA015659A47002A26CF /* pixel.o in Frameworks */,
-				30B26EA815659A47002A26CF /* predict.o in Frameworks */,
-				30B26EAA15659A47002A26CF /* quant.o in Frameworks */,
-				30B26EAC15659A47002A26CF /* rectangle.o in Frameworks */,
-				30B26EAE15659A47002A26CF /* set.o in Frameworks */,
-				30B26EB115659A47002A26CF /* threadpool.o in Frameworks */,
-				30B26EB415659A47002A26CF /* vlc.o in Frameworks */,
-				30B26EB715659A47002A26CF /* bitstream-a.o in Frameworks */,
-				30B26EB915659A47002A26CF /* cabac-a.o in Frameworks */,
-				30B26EBB15659A47002A26CF /* const-a.o in Frameworks */,
-				30B26EBD15659A47002A26CF /* cpu-a.o in Frameworks */,
-				30B26EC015659A47002A26CF /* dct-64.o in Frameworks */,
-				30B26EC215659A47002A26CF /* dct-a.o in Frameworks */,
-				30B26EC415659A47002A26CF /* deblock-a.o in Frameworks */,
-				30B26EC615659A47002A26CF /* mc-a.o in Frameworks */,
-				30B26EC815659A47002A26CF /* mc-a2.o in Frameworks */,
-				30B26ECA15659A47002A26CF /* mc-c.o in Frameworks */,
-				30B26ECD15659A47002A26CF /* pixel-a.o in Frameworks */,
-				30B26ECF15659A47002A26CF /* predict-a.o in Frameworks */,
-				30B26ED115659A47002A26CF /* predict-c.o in Frameworks */,
-				30B26ED315659A47002A26CF /* quant-a.o in Frameworks */,
-				30B26ED515659A47002A26CF /* sad-a.o in Frameworks */,
-				30B26ED815659A47002A26CF /* trellis-64.o in Frameworks */,
-				30B26EDD15659A47002A26CF /* analyse.o in Frameworks */,
-				30B26EDF15659A47002A26CF /* cabac.o in Frameworks */,
-				30B26EE115659A47002A26CF /* cavlc.o in Frameworks */,
-				30B26EE315659A47002A26CF /* encoder.o in Frameworks */,
-				30B26EE515659A47002A26CF /* lookahead.o in Frameworks */,
-				30B26EE715659A47002A26CF /* macroblock.o in Frameworks */,
-				30B26EE915659A47002A26CF /* me.o in Frameworks */,
-				30B26EEB15659A47002A26CF /* ratecontrol.o in Frameworks */,
-				30B26EEE15659A47002A26CF /* set.o in Frameworks */,
-				30B26EF215659A47002A26CF /* filters.o in Frameworks */,
-				30B26EF415659A47002A26CF /* cache.o in Frameworks */,
-				30B26EF615659A47002A26CF /* crop.o in Frameworks */,
-				30B26EF815659A47002A26CF /* depth.o in Frameworks */,
-				30B26EFA15659A47002A26CF /* fix_vfr_pts.o in Frameworks */,
-				30B26EFC15659A47002A26CF /* internal.o in Frameworks */,
-				30B26EFE15659A47002A26CF /* resize.o in Frameworks */,
-				30B26F0015659A47002A26CF /* select_every.o in Frameworks */,
-				30B26F0215659A47002A26CF /* source.o in Frameworks */,
-				30B26F0415659A47002A26CF /* video.o in Frameworks */,
-				30B26F0815659A47002A26CF /* input.o in Frameworks */,
-				30B26F0A15659A47002A26CF /* lavf.o in Frameworks */,
-				30B26F0C15659A47002A26CF /* raw.o in Frameworks */,
-				30B26F0E15659A47002A26CF /* thread.o in Frameworks */,
-				30B26F1015659A47002A26CF /* timecode.o in Frameworks */,
-				30B26F1215659A47002A26CF /* y4m.o in Frameworks */,
 				30B26F1315659A47002A26CF /* libx264.a in Frameworks */,
-				30B26F1615659A47002A26CF /* flv.o in Frameworks */,
-				30B26F1815659A47002A26CF /* flv_bytestream.o in Frameworks */,
-				30B26F1A15659A47002A26CF /* matroska.o in Frameworks */,
-				30B26F1C15659A47002A26CF /* matroska_ebml.o in Frameworks */,
-				30B26F1F15659A47002A26CF /* raw.o in Frameworks */,
-				30B26F2415659A47002A26CF /* x264.o in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1122,22 +850,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXLegacyTarget section */
-		30B26D08156598F6002A26CF /* screen_streamer_xcode */ = {
-			isa = PBXLegacyTarget;
-			buildArgumentsString = "";
-			buildConfigurationList = 30B26D09156598F6002A26CF /* Build configuration list for PBXLegacyTarget "screen_streamer_xcode" */;
-			buildPhases = (
-			);
-			buildToolPath = /usr/bin/make;
-			buildWorkingDirectory = /Users/hungerandthirst/Code/Projects/crunchy/screen_streamer;
-			dependencies = (
-				30B26F3315659AF3002A26CF /* PBXTargetDependency */,
-				30B26F3115659AF3002A26CF /* PBXTargetDependency */,
-			);
-			name = screen_streamer_xcode;
-			passBuildSettingsInEnvironment = 1;
-			productName = screen_streamer_xcode;
-		};
 		30B26F2815659ADD002A26CF /* librtmp */ = {
 			isa = PBXLegacyTarget;
 			buildArgumentsString = "SHARED= CRYPTO= SYS=posix";
@@ -1145,7 +857,7 @@
 			buildPhases = (
 			);
 			buildToolPath = /usr/bin/make;
-			buildWorkingDirectory = /Users/hungerandthirst/Code/Projects/crunchy/screen_streamer/librtmp/librtmp;
+			buildWorkingDirectory = ./librtmp/librtmp;
 			dependencies = (
 			);
 			name = librtmp;
@@ -1159,7 +871,7 @@
 			buildPhases = (
 			);
 			buildToolPath = /usr/bin/make;
-			buildWorkingDirectory = /Users/hungerandthirst/Code/Projects/crunchy/screen_streamer/libx264;
+			buildWorkingDirectory = ./libx264;
 			dependencies = (
 			);
 			name = libx264;
@@ -1180,9 +892,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				30B26F351565A434002A26CF /* PBXTargetDependency */,
-				30B26F371565A434002A26CF /* PBXTargetDependency */,
-				30B26F391565A434002A26CF /* PBXTargetDependency */,
+				0362EE5D1565C70E00E5409E /* PBXTargetDependency */,
+				0362EE5B1565C70A00E5409E /* PBXTargetDependency */,
 			);
 			name = screen_streamer;
 			productName = screen_streamer;
@@ -1195,7 +906,7 @@
 		30B26AE91565987B002A26CF /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0440;
 			};
 			buildConfigurationList = 30B26AEC1565987B002A26CF /* Build configuration list for PBXProject "screen_streamer" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1210,7 +921,6 @@
 			projectRoot = "";
 			targets = (
 				30B26AF11565987B002A26CF /* screen_streamer */,
-				30B26D08156598F6002A26CF /* screen_streamer_xcode */,
 				30B26F2815659ADD002A26CF /* librtmp */,
 				30B26F2C15659AE8002A26CF /* libx264 */,
 			);
@@ -1222,119 +932,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0362EE5E1565C79D00E5409E /* flv_bytestream.c in Sources */,
 				30B26E6815659A47002A26CF /* flv_bytestream_ext.c in Sources */,
 				30B26E6915659A47002A26CF /* bytestream.c in Sources */,
 				30B26E6B15659A47002A26CF /* tpl.c in Sources */,
-				30B26E6C15659A47002A26CF /* amf.c in Sources */,
-				30B26E6E15659A47002A26CF /* hashswf.c in Sources */,
-				30B26E7115659A47002A26CF /* log.c in Sources */,
-				30B26E7315659A47002A26CF /* Makefile in Sources */,
-				30B26E7415659A47002A26CF /* parseurl.c in Sources */,
-				30B26E7615659A47002A26CF /* rtmp.c in Sources */,
-				30B26E7D15659A47002A26CF /* thread.c in Sources */,
-				30B26E7E15659A47002A26CF /* asm.S in Sources */,
-				30B26E7F15659A47002A26CF /* cpu-a.S in Sources */,
-				30B26E8015659A47002A26CF /* dct-a.S in Sources */,
-				30B26E8115659A47002A26CF /* deblock-a.S in Sources */,
-				30B26E8215659A47002A26CF /* mc-a.S in Sources */,
-				30B26E8315659A47002A26CF /* mc-c.c in Sources */,
-				30B26E8415659A47002A26CF /* pixel-a.S in Sources */,
-				30B26E8515659A47002A26CF /* predict-a.S in Sources */,
-				30B26E8615659A47002A26CF /* predict-c.c in Sources */,
-				30B26E8715659A47002A26CF /* quant-a.S in Sources */,
-				30B26E8815659A47002A26CF /* bitstream.c in Sources */,
-				30B26E8A15659A47002A26CF /* cabac.c in Sources */,
-				30B26E8C15659A47002A26CF /* common.c in Sources */,
-				30B26E8E15659A47002A26CF /* cpu.c in Sources */,
-				30B26E9015659A47002A26CF /* dct.c in Sources */,
-				30B26E9215659A47002A26CF /* deblock.c in Sources */,
-				30B26E9415659A47002A26CF /* display-x11.c in Sources */,
-				30B26E9515659A47002A26CF /* frame.c in Sources */,
-				30B26E9715659A47002A26CF /* macroblock.c in Sources */,
-				30B26E9915659A47002A26CF /* mc.c in Sources */,
-				30B26E9B15659A47002A26CF /* mvpred.c in Sources */,
-				30B26E9D15659A47002A26CF /* osdep.c in Sources */,
-				30B26E9F15659A47002A26CF /* pixel.c in Sources */,
-				30B26EA115659A47002A26CF /* dct.c in Sources */,
-				30B26EA215659A47002A26CF /* deblock.c in Sources */,
-				30B26EA315659A47002A26CF /* mc.c in Sources */,
-				30B26EA415659A47002A26CF /* pixel.c in Sources */,
-				30B26EA515659A47002A26CF /* predict.c in Sources */,
-				30B26EA615659A47002A26CF /* quant.c in Sources */,
-				30B26EA715659A47002A26CF /* predict.c in Sources */,
-				30B26EA915659A47002A26CF /* quant.c in Sources */,
-				30B26EAB15659A47002A26CF /* rectangle.c in Sources */,
-				30B26EAD15659A47002A26CF /* set.c in Sources */,
-				30B26EAF15659A47002A26CF /* pixel.asm in Sources */,
-				30B26EB015659A47002A26CF /* threadpool.c in Sources */,
-				30B26EB215659A47002A26CF /* visualize.c in Sources */,
-				30B26EB315659A47002A26CF /* vlc.c in Sources */,
-				30B26EB515659A47002A26CF /* win32thread.c in Sources */,
-				30B26EB615659A47002A26CF /* bitstream-a.asm in Sources */,
-				30B26EB815659A47002A26CF /* cabac-a.asm in Sources */,
-				30B26EBA15659A47002A26CF /* const-a.asm in Sources */,
-				30B26EBC15659A47002A26CF /* cpu-a.asm in Sources */,
-				30B26EBE15659A47002A26CF /* dct-32.asm in Sources */,
-				30B26EBF15659A47002A26CF /* dct-64.asm in Sources */,
-				30B26EC115659A47002A26CF /* dct-a.asm in Sources */,
-				30B26EC315659A47002A26CF /* deblock-a.asm in Sources */,
-				30B26EC515659A47002A26CF /* mc-a.asm in Sources */,
-				30B26EC715659A47002A26CF /* mc-a2.asm in Sources */,
-				30B26EC915659A47002A26CF /* mc-c.c in Sources */,
-				30B26ECB15659A47002A26CF /* pixel-32.asm in Sources */,
-				30B26ECC15659A47002A26CF /* pixel-a.asm in Sources */,
-				30B26ECE15659A47002A26CF /* predict-a.asm in Sources */,
-				30B26ED015659A47002A26CF /* predict-c.c in Sources */,
-				30B26ED215659A47002A26CF /* quant-a.asm in Sources */,
-				30B26ED415659A47002A26CF /* sad-a.asm in Sources */,
-				30B26ED615659A47002A26CF /* sad16-a.asm in Sources */,
-				30B26ED715659A47002A26CF /* trellis-64.asm in Sources */,
-				30B26ED915659A47002A26CF /* x86inc.asm in Sources */,
-				30B26EDA15659A47002A26CF /* x86util.asm in Sources */,
-				30B26EDB15659A47002A26CF /* config.mak in Sources */,
-				30B26EDC15659A47002A26CF /* analyse.c in Sources */,
-				30B26EDE15659A47002A26CF /* cabac.c in Sources */,
-				30B26EE015659A47002A26CF /* cavlc.c in Sources */,
-				30B26EE215659A47002A26CF /* encoder.c in Sources */,
-				30B26EE415659A47002A26CF /* lookahead.c in Sources */,
-				30B26EE615659A47002A26CF /* macroblock.c in Sources */,
-				30B26EE815659A47002A26CF /* me.c in Sources */,
-				30B26EEA15659A47002A26CF /* ratecontrol.c in Sources */,
-				30B26EEC15659A47002A26CF /* rdo.c in Sources */,
-				30B26EED15659A47002A26CF /* set.c in Sources */,
-				30B26EEF15659A47002A26CF /* slicetype.c in Sources */,
-				30B26EF015659A47002A26CF /* getopt.c in Sources */,
-				30B26EF115659A47002A26CF /* filters.c in Sources */,
-				30B26EF315659A47002A26CF /* cache.c in Sources */,
-				30B26EF515659A47002A26CF /* crop.c in Sources */,
-				30B26EF715659A47002A26CF /* depth.c in Sources */,
-				30B26EF915659A47002A26CF /* fix_vfr_pts.c in Sources */,
-				30B26EFB15659A47002A26CF /* internal.c in Sources */,
-				30B26EFD15659A47002A26CF /* resize.c in Sources */,
-				30B26EFF15659A47002A26CF /* select_every.c in Sources */,
-				30B26F0115659A47002A26CF /* source.c in Sources */,
-				30B26F0315659A47002A26CF /* video.c in Sources */,
-				30B26F0515659A47002A26CF /* avs.c in Sources */,
-				30B26F0615659A47002A26CF /* ffms.c in Sources */,
-				30B26F0715659A47002A26CF /* input.c in Sources */,
-				30B26F0915659A47002A26CF /* lavf.c in Sources */,
-				30B26F0B15659A47002A26CF /* raw.c in Sources */,
-				30B26F0D15659A47002A26CF /* thread.c in Sources */,
-				30B26F0F15659A47002A26CF /* timecode.c in Sources */,
-				30B26F1115659A47002A26CF /* y4m.c in Sources */,
-				30B26F1415659A47002A26CF /* Makefile in Sources */,
-				30B26F1515659A47002A26CF /* flv.c in Sources */,
-				30B26F1715659A47002A26CF /* flv_bytestream.c in Sources */,
-				30B26F1915659A47002A26CF /* matroska.c in Sources */,
-				30B26F1B15659A47002A26CF /* matroska_ebml.c in Sources */,
-				30B26F1D15659A47002A26CF /* mp4.c in Sources */,
-				30B26F1E15659A47002A26CF /* raw.c in Sources */,
-				30B26F2015659A47002A26CF /* checkasm-a.asm in Sources */,
-				30B26F2115659A47002A26CF /* checkasm.c in Sources */,
-				30B26F2215659A47002A26CF /* xyuv.c in Sources */,
-				30B26F2315659A47002A26CF /* x264.c in Sources */,
-				30B26F2515659A47002A26CF /* x264dll.c in Sources */,
-				30B26F2615659A47002A26CF /* Makefile in Sources */,
 				30B26F2715659A47002A26CF /* sc_streamer.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1342,30 +943,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		30B26F3115659AF3002A26CF /* PBXTargetDependency */ = {
+		0362EE5B1565C70A00E5409E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 30B26F2815659ADD002A26CF /* librtmp */;
-			targetProxy = 30B26F3015659AF3002A26CF /* PBXContainerItemProxy */;
+			targetProxy = 0362EE5A1565C70A00E5409E /* PBXContainerItemProxy */;
 		};
-		30B26F3315659AF3002A26CF /* PBXTargetDependency */ = {
+		0362EE5D1565C70E00E5409E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 30B26F2C15659AE8002A26CF /* libx264 */;
-			targetProxy = 30B26F3215659AF3002A26CF /* PBXContainerItemProxy */;
-		};
-		30B26F351565A434002A26CF /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 30B26D08156598F6002A26CF /* screen_streamer_xcode */;
-			targetProxy = 30B26F341565A434002A26CF /* PBXContainerItemProxy */;
-		};
-		30B26F371565A434002A26CF /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 30B26F2815659ADD002A26CF /* librtmp */;
-			targetProxy = 30B26F361565A434002A26CF /* PBXContainerItemProxy */;
-		};
-		30B26F391565A434002A26CF /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 30B26F2C15659AE8002A26CF /* libx264 */;
-			targetProxy = 30B26F381565A434002A26CF /* PBXContainerItemProxy */;
+			targetProxy = 0362EE5C1565C70E00E5409E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1375,6 +961,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1411,6 +998,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1458,29 +1046,6 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SYMROOT = build;
-			};
-			name = Release;
-		};
-		30B26D0A156598F6002A26CF /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DEBUGGING_SYMBOLS = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		30B26D0B156598F6002A26CF /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				LIBRARY_SEARCH_PATHS = "";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -1555,14 +1120,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		30B26D09156598F6002A26CF /* Build configuration list for PBXLegacyTarget "screen_streamer_xcode" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				30B26D0A156598F6002A26CF /* Debug */,
-				30B26D0B156598F6002A26CF /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-		};
 		30B26F2915659ADD002A26CF /* Build configuration list for PBXLegacyTarget "librtmp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1570,6 +1127,7 @@
 				30B26F2B15659ADD002A26CF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		30B26F2D15659AE8002A26CF /* Build configuration list for PBXLegacyTarget "libx264" */ = {
 			isa = XCConfigurationList;
@@ -1578,6 +1136,7 @@
 				30B26F2F15659AE8002A26CF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

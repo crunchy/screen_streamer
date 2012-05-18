@@ -48,7 +48,7 @@ sc_mouse_coords sc_bytestream_get_mouse_data(int fd) {
 }
 
 sc_bytestream_packet sc_bytestream_put_frame(int fd, sc_frame frame) {
-  sc_bytestream_packet packet = {create_header(VIDEO), create_body(&frame, sizeof(frame))};
+  sc_bytestream_packet packet = {create_header(VIDEO), create_body(&frame, frame.size)};
   serialize_packet(fd, packet);
 
   return packet;

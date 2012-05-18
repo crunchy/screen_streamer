@@ -146,30 +146,34 @@ void handle_packets(int fd, char *streamUri, char *roomName, sc_frame_rect rect)
 }
 
 int main(int argc, char* argv[]) {
-    char c, *streamUri, *roomName;
+    char c, *streamUri, *roomName, *inFile;
     sc_frame_rect rect;
 
-    while ((c = getopt (argc, argv, "w:h:u:r:")) != -1) {
+    while ((c = getopt (argc, argv, "w:h:u:r:f:")) != -1) {
         switch (c) {
             case 'w':
-            rect.width = (uint16_t) atoi(optarg);
-            break;
+                rect.width = (uint16_t) atoi(optarg);
+                break;
             case 'h':
-            rect.height = (uint16_t) atoi(optarg);
-            break;
+                rect.height = (uint16_t) atoi(optarg);
+                break;
             case 'u':
-            streamUri = optarg;
-            break;
+                streamUri = optarg;
+                break;
             case 'r':
-            roomName = optarg;
-            break;
+                roomName = optarg;
+                break;
+            case 'f':
+                inFile = optarg;
+                break;
         }
     }
     
-    printf("Started streamer with width: %i, height: %i, URI: %s, roomName: %s \n", rect.width, rect.height, streamUri, roomName);
+    printf("Started streamer with width: %i, height: %i, URI: %s, roomName: %s, file: %s \n", rect.width, rect.height, streamUri, roomName, inFile);
 
     fd_set fds;
-    int fd = fileno(stdin);
+    FILE *stream = freopen(inFile, "r", stdin);
+    int fd = fileno(stream);
 
     FD_ZERO(&fds);
     FD_SET(fd, &fds);

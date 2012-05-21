@@ -70,7 +70,7 @@ void sc_streamer_send_frame(sc_streamer streamer, sc_frame frame, sc_time frame_
     pic_in.img.plane[1] = YUV_frame + image_size;
     pic_in.img.plane[2] = YUV_frame + image_size + image_size / 4;
 
-    pic_in.i_pts = floor((frame_time_stamp - streamer.start_time_stamp)/(1.0/SC_TimeBase));
+    pic_in.i_pts = floor((frame_time_stamp - streamer.start_time_stamp));
 
     x264_nal_t* nals;
     int i_nals;
@@ -105,7 +105,7 @@ void handle_packets(int fd, char *streamUri, char *roomName, sc_frame_rect rect)
     sc_mouse_coords coords;
     sc_frame frame;
 
-    printf("%i RECEIVED at %i\n", packet.header.type, packet.header.timestamp);
+    printf("%i RECEIVED at %u\n", packet.header.type, packet.header.timestamp);
 
     switch(packet.header.type) {
         case START:

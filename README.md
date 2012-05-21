@@ -1,4 +1,8 @@
+Debugging
+======
 
+If you uncomment the `param.psz_dump_yuv` parameter, the raw video stream will be dumped to file so that
+you can check the output for corruption or errors.
 
 License
 ======

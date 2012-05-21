@@ -7,7 +7,11 @@
 #include "bytestream.h"
 
 sc_bytestream_header create_header(uint8_t type) {
-  sc_bytestream_header header = {(uint16_t)type, time(NULL)};
+  return create_header_with_time(type, time(NULL) * SC_TimeBase);
+}
+
+sc_bytestream_header create_header_with_time(uint8_t type, sc_time timestamp) {
+  sc_bytestream_header header = {(uint16_t)type, timestamp};
   return header;
 }
 
@@ -47,8 +51,8 @@ sc_mouse_coords sc_bytestream_get_mouse_data(int fd) {
   return parse_mouse_coords(packet);
 }
 
-sc_bytestream_packet sc_bytestream_put_frame(int fd, sc_frame frame) {
-  sc_bytestream_packet packet = {create_header(VIDEO), create_body(frame.framePtr, frame.size)};
+sc_bytestream_packet sc_bytestream_put_frame(int fd, sc_frame frame, sc_time timestamp) {
+  sc_bytestream_packet packet = {create_header_with_time(VIDEO, timestamp), create_body(frame.framePtr, frame.size)};
   serialize_packet(fd, packet);
 
   return packet;

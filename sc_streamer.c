@@ -58,27 +58,27 @@ sc_streamer sc_streamer_init(char* stream_uri, const char* room_name, sc_frame_r
 }
 
 void sc_streamer_send_frame(sc_streamer streamer, sc_frame frame, sc_time frame_time_stamp) {
-    x264_picture_t pic_in, pic_out;
-    x264_picture_alloc(&pic_in, X264_CSP_I420, streamer.capture_rect.width, streamer.capture_rect.height);
+    x264_picture_t *pic_in, *pic_out;
+    x264_picture_alloc(pic_in, X264_CSP_I420, streamer.capture_rect.width, streamer.capture_rect.height);
     uint8_t* YUV_frame = frame.framePtr;
 
     const size_t image_size = (streamer.capture_rect.width * streamer.capture_rect.height);
 
-    free(pic_in.img.plane[0]);
+    free(pic_in->img.plane[0]);
 
-    pic_in.img.plane[0] = YUV_frame;
-    pic_in.img.plane[1] = YUV_frame + image_size;
-    pic_in.img.plane[2] = YUV_frame + image_size + image_size / 4;
+    pic_in->img.plane[0] = YUV_frame;
+    pic_in->img.plane[1] = YUV_frame + image_size;
+    pic_in->img.plane[2] = YUV_frame + image_size + image_size / 4;
 
-    pic_in.i_pts = floor((frame_time_stamp - streamer.start_time_stamp));
+    pic_in->i_pts = floor((frame_time_stamp - streamer.start_time_stamp));
 
     x264_nal_t* nals;
     int i_nals;
 
-    int frame_size = x264_encoder_encode(streamer.encoder, &nals, &i_nals, &pic_in, &pic_out);
+    int frame_size = x264_encoder_encode(streamer.encoder, &nals, &i_nals, pic_in, pic_out);
 
     if(frame_size > 0) {
-       write_frame( *streamer.flv_out_handle, streamer.rtmp, nals[0].p_payload, frame_size, &pic_out );
+       write_frame( *streamer.flv_out_handle, streamer.rtmp, nals[0].p_payload, frame_size, pic_out );
     }
 
     streamer.frames++;
@@ -86,7 +86,9 @@ void sc_streamer_send_frame(sc_streamer streamer, sc_frame frame, sc_time frame_
     free(YUV_frame);
     nals = NULL;
     free(nals);
-    // x264_picture_clean(&pic_in);
+
+    // FIXME: LEAK!!!!
+    // x264_picture_clean(pic_in);
 }
 
 // TODO: get room name

@@ -99,37 +99,6 @@ void sc_streamer_stop(sc_streamer streamer) {
     close_RTMP_stream(*streamer.flv_out_handle, streamer.rtmp);
 }
 
-void handle_packets(int fd, char *streamUri, char *roomName, sc_frame_rect rect) {
-    sc_streamer streamer;
-    sc_bytestream_packet packet = sc_bytestream_get_event(fd);
-    sc_mouse_coords coords;
-    sc_frame frame;
-
-    printf("%i RECEIVED at %u\n", packet.header.type, packet.header.timestamp);
-
-    switch(packet.header.type) {
-        case START:
-            streamer = sc_streamer_init(streamUri, roomName, rect, packet.header.timestamp);
-            break;
-        case STOP:
-            sc_streamer_stop(streamer);
-            exit(1);
-            break;
-        case MOUSE:
-            coords = parse_mouse_coords(packet);
-            sc_streamer_send_mouse_data(streamer, coords, packet.header.timestamp);
-            break;
-        case VIDEO:
-            frame = parse_frame(packet);
-            sc_streamer_send_frame(streamer, frame, packet.header.timestamp);
-            break;
-        case NO_DATA:
-        default:
-            printf("NOTHING\n");
-            break;    // maybe a wait is in order
-    }
-}
-
 int main(int argc, char* argv[]) {
     char c, *streamUri, *roomName, *inFile;
     sc_frame_rect rect;
@@ -160,9 +129,37 @@ int main(int argc, char* argv[]) {
     // FILE *stream = freopen(inFile, "r", stdin);
     int fd = fileno(stdin);
 
+    sc_streamer streamer;
+
     // main processing loop
     while(TRUE) {
-        handle_packets(fd, streamUri, roomName, rect);
+        sc_bytestream_packet packet = sc_bytestream_get_event(fd);
+        sc_mouse_coords coords;
+        sc_frame frame;
+
+        printf("%i RECEIVED at %u\n", packet.header.type, packet.header.timestamp);
+
+        switch(packet.header.type) {
+            case START:
+                streamer = sc_streamer_init(streamUri, roomName, rect, packet.header.timestamp);
+                break;
+            case STOP:
+                sc_streamer_stop(streamer);
+                exit(1);
+                break;
+            case MOUSE:
+                coords = parse_mouse_coords(packet);
+                sc_streamer_send_mouse_data(streamer, coords, packet.header.timestamp);
+                break;
+            case VIDEO:
+                frame = parse_frame(packet);
+                sc_streamer_send_frame(streamer, frame, packet.header.timestamp);
+                break;
+            case NO_DATA:
+            default:
+                printf("NOTHING\n");
+                break;    // maybe a wait is in order
+        }
     }
 
     return 0;

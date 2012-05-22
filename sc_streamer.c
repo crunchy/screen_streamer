@@ -4,7 +4,7 @@
 
 extern tpl_hook_t tpl_hook;
 
-sc_streamer sc_streamer_init(char* stream_uri, const char* room_name, sc_frame_rect capture_rect, sc_time start_time_stamp){
+sc_streamer sc_streamer_init(const char* stream_uri, const char* room_name, sc_frame_rect capture_rect, sc_time start_time_stamp){
     x264_param_t param;
 
     sc_streamer streamer = {.start_time_stamp = start_time_stamp,

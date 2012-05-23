@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		0362EE5E1565C79D00E5409E /* flv_bytestream.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26E3B15659A46002A26CF /* flv_bytestream.c */; };
-		0362EE5F1565CDA800E5409E /* runnableStream.tpl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 30B26E6515659A46002A26CF /* runnableStream.tpl */; };
 		30B26E6815659A47002A26CF /* flv_bytestream_ext.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D2415659A46002A26CF /* flv_bytestream_ext.c */; };
 		30B26E6915659A47002A26CF /* bytestream.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D2715659A46002A26CF /* bytestream.c */; };
 		30B26E6B15659A47002A26CF /* tpl.c in Sources */ = {isa = PBXBuildFile; fileRef = 30B26D2A15659A46002A26CF /* tpl.c */; };
@@ -41,7 +40,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				0362EE5F1565CDA800E5409E /* runnableStream.tpl in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,7 +51,6 @@
 		30B26D2515659A46002A26CF /* flv_bytestream_ext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = flv_bytestream_ext.h; sourceTree = SOURCE_ROOT; };
 		30B26D2715659A46002A26CF /* bytestream.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bytestream.c; sourceTree = "<group>"; };
 		30B26D2815659A46002A26CF /* bytestream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bytestream.h; sourceTree = "<group>"; };
-		30B26D2915659A46002A26CF /* bytestream.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; path = bytestream.o; sourceTree = "<group>"; };
 		30B26D2A15659A46002A26CF /* tpl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tpl.c; sourceTree = "<group>"; };
 		30B26D2B15659A46002A26CF /* tpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tpl.h; sourceTree = "<group>"; };
 		30B26D2D15659A46002A26CF /* ChangeLog */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ChangeLog; sourceTree = "<group>"; };
@@ -351,7 +348,6 @@
 		30B26E6215659A46002A26CF /* x264res.rc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = x264res.rc; sourceTree = "<group>"; };
 		30B26E6315659A46002A26CF /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = SOURCE_ROOT; };
 		30B26E6415659A46002A26CF /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
-		30B26E6515659A46002A26CF /* runnableStream.tpl */ = {isa = PBXFileReference; lastKnownFileType = file; path = runnableStream.tpl; sourceTree = SOURCE_ROOT; };
 		30B26E6615659A46002A26CF /* sc_streamer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sc_streamer.c; sourceTree = SOURCE_ROOT; };
 		30B26E6715659A46002A26CF /* sc_streamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sc_streamer.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -395,7 +391,6 @@
 				30B26D5515659A46002A26CF /* libx264 */,
 				30B26E6315659A46002A26CF /* Makefile */,
 				30B26E6415659A46002A26CF /* README.md */,
-				30B26E6515659A46002A26CF /* runnableStream.tpl */,
 				30B26E6615659A46002A26CF /* sc_streamer.c */,
 				30B26E6715659A46002A26CF /* sc_streamer.h */,
 			);
@@ -407,7 +402,6 @@
 			children = (
 				30B26D2715659A46002A26CF /* bytestream.c */,
 				30B26D2815659A46002A26CF /* bytestream.h */,
-				30B26D2915659A46002A26CF /* bytestream.o */,
 				30B26D2A15659A46002A26CF /* tpl.c */,
 				30B26D2B15659A46002A26CF /* tpl.h */,
 			);

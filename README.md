@@ -31,7 +31,12 @@ run the `screen_streamer` binary from the command line with all the appropriate 
 `./screen_streamer -urtmp://example.com:1935/screenshare/roomId -rroomId -w1440 -h900 -frunnableStream.tpl`
 
 This will play back the stream file and actually stream the recorded events to the fms server and/or dump to
-the dump.ym4 file if the dump param is uncommented (see above).
+the dump.y4m file if the dump param is uncommented (see above).
+
+Dependencies
+======
+ * libx264 - ./configure --enable-static --disable-cli --enable-debug --enable-pic
+ * librtmp
 
 License
 ======

@@ -22,7 +22,8 @@ sc_streamer sc_streamer_init(const char* stream_uri, const char* room_name, sc_f
     // param.psz_dump_yuv = (char *)"/tmp/dump.y4m";
 
     param.b_vfr_input = 1;
-    param.i_threads = 4;
+    param.i_keyint_min = 1;
+    param.i_keyint_max = 15;
 
     param.i_width = capture_rect.width;
     param.i_height = capture_rect.height;

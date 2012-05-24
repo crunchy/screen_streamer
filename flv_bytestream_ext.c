@@ -23,6 +23,7 @@ flv_hnd_t *open_flv_buffer() {
     memset( c, 0, sizeof(*c) );
 
     p_flv->c = c;
+    p_flv->b_dts_compress = 1;
     return p_flv;
 }
 
@@ -102,32 +103,32 @@ int flv_flush_RTMP_data( RTMP *rtmp, flv_buffer *flv )
     return 0;
 }
 
-int set_param( flv_hnd_t handle, x264_param_t *p_param )
+int set_param( hnd_t handle, x264_param_t *p_param )
 {
-    flv_hnd_t *p_flv = &handle;
+    flv_hnd_t *p_flv = (flv_hnd_t *)handle;
     flv_buffer *c = p_flv->c;
-
+    
     flv_put_byte( c, FLV_TAG_TYPE_META ); // Tag Type "script data"
-
+    
     int start = c->d_cur;
     flv_put_be24( c, 0 ); // data length
     flv_put_be24( c, 0 ); // timestamp
     flv_put_be32( c, 0 ); // reserved
-
+    
     flv_put_byte( c, AMF_DATA_TYPE_STRING );
     flv_put_amf_string( c, "onMetaData" );
-
+    
     flv_put_byte( c, AMF_DATA_TYPE_MIXEDARRAY );
     flv_put_be32( c, 7 );
-
+    
     flv_put_amf_string( c, "width" );
     flv_put_amf_double( c, p_param->i_width );
-
+    
     flv_put_amf_string( c, "height" );
     flv_put_amf_double( c, p_param->i_height );
-
+    
     flv_put_amf_string( c, "framerate" );
-
+    
     if( !p_param->b_vfr_input )
         flv_put_amf_double( c, (double)p_param->i_fps_num / p_param->i_fps_den );
     else
@@ -135,42 +136,42 @@ int set_param( flv_hnd_t handle, x264_param_t *p_param )
         p_flv->i_framerate_pos = c->d_cur + c->d_total + 1;
         flv_put_amf_double( c, 0 ); // written at end of encoding
     }
-
+    
     flv_put_amf_string( c, "videocodecid" );
     flv_put_amf_double( c, FLV_CODECID_H264 );
-
+    
     flv_put_amf_string( c, "duration" );
     p_flv->i_duration_pos = c->d_cur + c->d_total + 1;
     flv_put_amf_double( c, 0 ); // written at end of encoding
-
+    
     flv_put_amf_string( c, "filesize" );
     p_flv->i_filesize_pos = c->d_cur + c->d_total + 1;
     flv_put_amf_double( c, 0 ); // written at end of encoding
-
+    
     flv_put_amf_string( c, "videodatarate" );
     p_flv->i_bitrate_pos = c->d_cur + c->d_total + 1;
     flv_put_amf_double( c, 0 ); // written at end of encoding
-
+    
     flv_put_amf_string( c, "" );
     flv_put_byte( c, AMF_END_OF_OBJECT );
-
+    
     unsigned length = c->d_cur - start;
     flv_rewrite_amf_be24( c, length - 10, start );
-
+    
     flv_put_be32( c, length + 1 ); // tag length
-
+    
     p_flv->i_fps_num = p_param->i_fps_num;
     p_flv->i_fps_den = p_param->i_fps_den;
     p_flv->d_timebase = (double)p_param->i_timebase_num / p_param->i_timebase_den;
     p_flv->b_vfr_input = p_param->b_vfr_input;
     p_flv->i_delay_frames = p_param->i_bframe ? (p_param->i_bframe_pyramid ? 2 : 1) : 0;
-
+    
     return 0;
 }
 
-int write_headers( flv_hnd_t handle, RTMP *rtmp, x264_nal_t *p_nal )
+int write_headers( hnd_t handle, RTMP *rtmp, x264_nal_t *p_nal )
 {
-    flv_hnd_t *p_flv = &handle;
+    flv_hnd_t *p_flv = (flv_hnd_t *)handle;
     flv_buffer *c = p_flv->c;
 
     int sps_size = p_nal[0].i_payload;
@@ -226,27 +227,33 @@ int write_headers( flv_hnd_t handle, RTMP *rtmp, x264_nal_t *p_nal )
     return sei_size + sps_size + pps_size;
 }
 
-int write_frame( flv_hnd_t handle, RTMP *rtmp, uint8_t *p_nalu, int i_size, x264_picture_t *p_picture )
+int write_frame( hnd_t handle, RTMP *rtmp, uint8_t *p_nalu, int i_size, x264_picture_t *p_picture )
 {
-    flv_hnd_t *p_flv = &handle;
+    flv_hnd_t *p_flv = (flv_hnd_t *)handle;
     flv_buffer *c = p_flv->c;
-
+    
 #define convert_timebase_ms( timestamp, timebase ) (int64_t)((timestamp) * (timebase) * 1000 + 0.5)
-
+    
     if( !p_flv->i_framenum )
+    {
         p_flv->i_delay_time = p_picture->i_dts * -1;
-
+        if( !p_flv->b_dts_compress && p_flv->i_delay_time )
+            fprintf(stderr, "inital delay\n");
+        /*x264_cli_log( "flv", X264_LOG_INFO, "initial delay %"PRId64" ms\n",
+         convert_timebase_ms( p_picture->i_pts + p_flv->i_delay_time, p_flv->d_timebase ) );*/
+    }
+    
     int64_t dts;
     int64_t cts;
     int64_t offset;
-
+    
     if( p_flv->b_dts_compress )
     {
         if( p_flv->i_framenum == 1 )
             p_flv->i_init_delta = convert_timebase_ms( p_picture->i_dts + p_flv->i_delay_time, p_flv->d_timebase );
         dts = p_flv->i_framenum > p_flv->i_delay_frames
-            ? convert_timebase_ms( p_picture->i_dts, p_flv->d_timebase )
-            : p_flv->i_framenum * p_flv->i_init_delta / (p_flv->i_delay_frames + 1);
+        ? convert_timebase_ms( p_picture->i_dts, p_flv->d_timebase )
+        : p_flv->i_framenum * p_flv->i_init_delta / (p_flv->i_delay_frames + 1);
         cts = convert_timebase_ms( p_picture->i_pts, p_flv->d_timebase );
     }
     else
@@ -255,22 +262,30 @@ int write_frame( flv_hnd_t handle, RTMP *rtmp, uint8_t *p_nalu, int i_size, x264
         cts = convert_timebase_ms( p_picture->i_pts + p_flv->i_delay_time, p_flv->d_timebase );
     }
     offset = cts - dts;
-
+    
+    if( p_flv->i_framenum )
+    {
+        if( p_flv->i_prev_dts == dts )
+            fprintf(stderr, "Duplicate DTS generated by rounding\n");
+       
+        if( p_flv->i_prev_cts == cts )
+            fprintf(stderr, "Duplicate CTS generated by rounding\n");
+    }
     p_flv->i_prev_dts = dts;
     p_flv->i_prev_cts = cts;
-
+    
     // A new frame - write packet header
     flv_put_byte( c, FLV_TAG_TYPE_VIDEO );
     flv_put_be24( c, 0 ); // calculated later
     flv_put_be24( c, dts );
     flv_put_byte( c, dts >> 24 );
     flv_put_be24( c, 0 );
-
+    
     p_flv->start = c->d_cur;
     flv_put_byte( c, p_picture->b_keyframe ? FLV_FRAME_KEY : FLV_FRAME_INTER );
     flv_put_byte( c, 1 ); // AVC NALU
     flv_put_be24( c, offset );
-
+    
     if( p_flv->sei )
     {
         flv_append_data( c, p_flv->sei, p_flv->sei_len );
@@ -278,14 +293,14 @@ int write_frame( flv_hnd_t handle, RTMP *rtmp, uint8_t *p_nalu, int i_size, x264
         p_flv->sei = NULL;
     }
     flv_append_data( c, p_nalu, i_size );
-
+    
     unsigned length = c->d_cur - p_flv->start;
     flv_rewrite_amf_be24( c, length, p_flv->start - 10 );
     flv_put_be32( c, 11 + length ); // Last tag size
     CHECK( flv_flush_RTMP_data( rtmp, c ) );
-
+    
     p_flv->i_framenum++;
-
+    
     return i_size;
 }
 

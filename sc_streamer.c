@@ -44,13 +44,13 @@ sc_streamer sc_streamer_init(const char* stream_uri, const char* room_name, sc_f
 
     streamer.encoder = x264_encoder_open(&param);
 
-    set_param( *streamer.flv_out_handle, &param );
+    set_param( streamer.flv_out_handle, &param );
 
     x264_nal_t *headers;
     int i_nal;
 
     x264_encoder_headers( streamer.encoder, &headers, &i_nal );
-    write_headers( *streamer.flv_out_handle, streamer.rtmp, headers );
+    write_headers( streamer.flv_out_handle, streamer.rtmp, headers );
     char *shared_object_name = (char *) malloc (100);
     sprintf(shared_object_name, "SC.SS.%s.Cursor", room_name);
     setup_shared_object(shared_object_name, streamer.rtmp);
@@ -82,7 +82,7 @@ void sc_streamer_send_frame(sc_streamer streamer, sc_frame frame, sc_time frame_
     int frame_size = x264_encoder_encode(streamer.encoder, &nals, &i_nals, &pic_in, &pic_out);
 
     if(frame_size > 0) {
-       write_frame( *streamer.flv_out_handle, streamer.rtmp, nals[0].p_payload, frame_size, &pic_out );
+       write_frame( streamer.flv_out_handle, streamer.rtmp, nals[0].p_payload, frame_size, &pic_out );
     }
 
     streamer.frames++;

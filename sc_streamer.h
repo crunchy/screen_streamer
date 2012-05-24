@@ -16,9 +16,14 @@ typedef struct {
     sc_time start_time_stamp;
     const char* stream_uri;
     const char* room_name;
+    const char* so_name;
+    
     sc_frame_rect capture_rect;
 
     x264_t* encoder;
+    
+    int rtmp_setup;
+    int so_version;
 } sc_streamer;
 
 sc_streamer sc_streamer_init(const char* stream_uri, const char* room_name, sc_frame_rect capture_rect, sc_time start_time_stamp);

@@ -29,6 +29,7 @@ flv_hnd_t *open_flv_buffer() {
 
 RTMP *open_RTMP_stream(char *stream_uri)
 {
+    RTMP_LogSetLevel(RTMP_LOGDEBUG);
     RTMP *rtmp = RTMP_Alloc();
     RTMP_Init(rtmp);
     RTMP_SetupURL(rtmp, stream_uri);
@@ -59,7 +60,7 @@ int close_RTMP_stream(flv_hnd_t handle, RTMP *rtmp)
 int send_invoke( RTMP *rtmp, uint16_t x, uint16_t y, uint32_t timestamp, const char *room_name )
 {
   RTMPPacket packet;
-    printf("Sending mouse to %s", room_name);
+    
   AVal name = {room_name, strlen(room_name)};
   AVal command = AVC("updateCursorLocation");
 
@@ -304,7 +305,7 @@ int write_frame( hnd_t handle, RTMP *rtmp, uint8_t *p_nalu, int i_size, x264_pic
     return i_size;
 }
 
-void setup_shared_object(char *shared_object, RTMP *rtmp) {
+void setup_shared_object(const char *shared_object, RTMP *rtmp) {
     RTMPPacket packet;
     
     char pbuffer[512], *pend = pbuffer + sizeof(pbuffer);
@@ -336,11 +337,10 @@ void setup_shared_object(char *shared_object, RTMP *rtmp) {
     
     packet.m_nBodySize = (int) (enc - packet.m_body);
     
-    
     RTMP_SendPacket(rtmp, &packet, TRUE);
 }
 
-void update_x_y_and_timestamp(char *shared_object, RTMP *rtmp, uint16_t x, uint16_t y, uint64_t timestamp) {
+void update_x_y_and_timestamp(const char *shared_object, RTMP *rtmp, uint16_t x, uint16_t y, uint64_t timestamp, int so_version) {
     RTMPPacket packet;
     
     char pbuffer[512], *pend = pbuffer + sizeof(pbuffer);
@@ -361,16 +361,8 @@ void update_x_y_and_timestamp(char *shared_object, RTMP *rtmp, uint16_t x, uint1
     enc = AMF_EncodeInt16(enc, pend, length);
     memcpy(enc, shared_object, length);
     enc += length;
-    
-    int version = 0;
-    
-    if(rtmp->lastSharedObject != NULL && strcmp(rtmp->lastSharedObject->name, shared_object) == 0) {
-        version = rtmp->lastSharedObject->version++;
-    }
-    
-    printf("Version: %i", version);
-    
-    enc = AMF_EncodeInt32(enc, pend, version); //version 0
+   
+    enc = AMF_EncodeInt32(enc, pend, so_version); //version 0
     enc = AMF_EncodeInt32(enc, pend, 0); //flag persistence 0 for temp, 2 for persistent
     enc = AMF_EncodeInt32(enc, pend, 0); //four random bytes
     

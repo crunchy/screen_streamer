@@ -160,8 +160,6 @@ int main(int argc, char* argv[]) {
                 have_inital_SO = 1;
             }
         }
-            
-        printf("%i RECEIVED at %u\n", packet.header.type, packet.header.timestamp);
         
         switch(packet.header.type) {
             case START:

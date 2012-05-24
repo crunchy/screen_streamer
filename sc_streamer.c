@@ -51,6 +51,9 @@ sc_streamer sc_streamer_init(const char* stream_uri, const char* room_name, sc_f
 
     x264_encoder_headers( streamer.encoder, &headers, &i_nal );
     write_headers( *streamer.flv_out_handle, streamer.rtmp, headers );
+    char *shared_object_name = (char *) malloc (100);
+    sprintf(shared_object_name, "SC.SS.%s.Cursor", room_name);
+    setup_shared_object(shared_object_name, streamer.rtmp);
 
     headers = NULL;
     free(headers);
@@ -94,7 +97,10 @@ void sc_streamer_send_frame(sc_streamer streamer, sc_frame frame, sc_time frame_
 
 // TODO: get room name
 void sc_streamer_send_mouse_data(sc_streamer streamer, sc_mouse_coords coords, sc_time coords_time_stamp) {
-    send_invoke( streamer.rtmp, coords.x, coords.y, coords_time_stamp, streamer.room_name );
+    char *shared_object_name = (char *) malloc (100);
+    sprintf(shared_object_name, "SC.SS.%s.Cursor", streamer.room_name);
+    printf("Updating x: %d, y: %d \n", coords.x, coords.y);
+    update_x_y_and_timestamp(shared_object_name, streamer.rtmp, coords.x, coords.y, coords_time_stamp);
 }
 
 void sc_streamer_stop(sc_streamer streamer) {

@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <rtmp.h>
+#include <log.h>
 #include <x264cli.h>
 #include <output/flv_bytestream.h>
 
@@ -45,3 +46,6 @@ int send_invoke( RTMP *rtmp, uint16_t x, uint16_t y, uint32_t timestamp, const c
 int set_param( flv_hnd_t handle, x264_param_t *p_param );
 int write_headers( flv_hnd_t handle, RTMP *rtmp, x264_nal_t *p_nal );
 int write_frame( flv_hnd_t handle, RTMP *rtmp, uint8_t *p_nalu, int i_size, x264_picture_t *p_picture );
+
+void setup_shared_object(char *shared_object, RTMP *rtmp);
+void update_x_y_and_timestamp(char *shared_object, RTMP *rtmp, uint16_t x, uint16_t y, uint64_t timestamp);

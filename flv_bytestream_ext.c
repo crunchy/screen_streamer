@@ -32,6 +32,7 @@ RTMP *open_RTMP_stream(char *stream_uri)
     RTMP_Init(rtmp);
     RTMP_SetupURL(rtmp, stream_uri);
     RTMP_EnableWrite(rtmp);             // To publish a stream, enable write support before connect
+    
     RTMP_Connect(rtmp, NULL);
     RTMP_ConnectStream(rtmp, 0);
 
@@ -57,6 +58,7 @@ int close_RTMP_stream(flv_hnd_t handle, RTMP *rtmp)
 int send_invoke( RTMP *rtmp, uint16_t x, uint16_t y, uint32_t timestamp, const char *room_name )
 {
   RTMPPacket packet;
+    printf("Sending mouse to %s", room_name);
   AVal name = {room_name, strlen(room_name)};
   AVal command = AVC("updateCursorLocation");
 
@@ -285,4 +287,118 @@ int write_frame( flv_hnd_t handle, RTMP *rtmp, uint8_t *p_nalu, int i_size, x264
     p_flv->i_framenum++;
 
     return i_size;
+}
+
+void setup_shared_object(char *shared_object, RTMP *rtmp) {
+    RTMPPacket packet;
+    
+    char pbuffer[512], *pend = pbuffer + sizeof(pbuffer);
+    char *enc;
+    
+    packet.m_nChannel = 0x03;
+    packet.m_headerType = RTMP_PACKET_SIZE_LARGE;
+    packet.m_packetType = RTMP_PACKET_TYPE_SHARED_OBJECT;
+    packet.m_nTimeStamp = 0;
+    packet.m_nInfoField2 = 0;
+    packet.m_hasAbsTimestamp = 0;
+    packet.m_body = pbuffer + RTMP_MAX_HEADER_SIZE;
+    
+    enc = packet.m_body;
+    
+    //SO name
+    size_t length = strlen(shared_object);
+    enc = AMF_EncodeInt16(enc, pend, length);
+    memcpy(enc, shared_object, length);
+    enc += length;
+    
+    enc = AMF_EncodeInt32(enc, pend, 0); //version 0
+    enc = AMF_EncodeInt32(enc, pend, 0); //flag persistence 0 for temp, 2 for persistent
+    enc = AMF_EncodeInt32(enc, pend, 0); //four random bytes
+    
+    *enc++ = 0x01; //event type - init/open
+    
+    enc = AMF_EncodeInt32(enc, pend, 0); //data
+    
+    packet.m_nBodySize = (int) (enc - packet.m_body);
+    
+    
+    RTMP_SendPacket(rtmp, &packet, TRUE);
+}
+
+void update_x_y_and_timestamp(char *shared_object, RTMP *rtmp, uint16_t x, uint16_t y, uint64_t timestamp) {
+    RTMPPacket packet;
+    
+    char pbuffer[512], *pend = pbuffer + sizeof(pbuffer);
+    char *enc;
+    
+    packet.m_nChannel = 0x03;
+    packet.m_headerType = RTMP_PACKET_SIZE_LARGE;
+    packet.m_packetType = RTMP_PACKET_TYPE_SHARED_OBJECT;
+    packet.m_nTimeStamp = (int) time(NULL);
+    packet.m_nInfoField2 = 0;
+    packet.m_hasAbsTimestamp = 1;
+    packet.m_body = pbuffer + RTMP_MAX_HEADER_SIZE;
+    
+    enc = packet.m_body;
+    
+    //SO name
+    size_t length = strlen(shared_object);
+    enc = AMF_EncodeInt16(enc, pend, length);
+    memcpy(enc, shared_object, length);
+    enc += length;
+    
+    int version = 0;
+    
+    if(rtmp->lastSharedObject != NULL && strcmp(rtmp->lastSharedObject->name, shared_object) == 0) {
+        version = rtmp->lastSharedObject->version++;
+    }
+    
+    printf("Version: %i", version);
+    
+    enc = AMF_EncodeInt32(enc, pend, version); //version 0
+    enc = AMF_EncodeInt32(enc, pend, 0); //flag persistence 0 for temp, 2 for persistent
+    enc = AMF_EncodeInt32(enc, pend, 0); //four random bytes
+    
+    *enc++ = 0x03; //event type - update
+    AVal xName = AVC("x");
+    char *place = enc;
+    enc = AMF_EncodeInt32(enc, pend, 0); //length of data, set later
+    
+    enc = AMF_EncodeNamedNumber(enc, pend, &xName, x);
+    
+    int data_length = (int) (enc-place);
+    enc -= data_length;
+    AMF_EncodeInt32(enc, pend, data_length-4);
+    enc += data_length;
+    
+    *enc++ = 0x03; //event type - update
+    
+    AVal yName = AVC("y");
+    place = enc;
+    enc = AMF_EncodeInt32(enc, pend, 0); //length of data, set later
+    
+    enc = AMF_EncodeNamedNumber(enc, pend, &yName, y);
+    
+    data_length = (int) (enc-place);
+    enc -= data_length;
+    AMF_EncodeInt32(enc, pend, data_length-4);
+    enc += data_length;
+    
+    *enc++ = 0x03; //event type - update
+    
+    AVal tName = AVC("timeStamp");
+    place = enc;
+    enc = AMF_EncodeInt32(enc, pend, 0); //length of data, set later
+    
+    enc = AMF_EncodeNamedNumber(enc, pend, &tName, timestamp);
+    
+    data_length = (int) (enc-place);
+    enc -= data_length;
+    AMF_EncodeInt32(enc, pend, data_length-4);
+    enc += data_length;
+    
+    
+    packet.m_nBodySize = (int) (enc - packet.m_body);
+    
+    RTMP_SendPacket(rtmp, &packet, TRUE);
 }

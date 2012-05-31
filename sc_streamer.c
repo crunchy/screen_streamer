@@ -4,11 +4,14 @@
 
 extern tpl_hook_t tpl_hook;
 
-sc_streamer sc_streamer_init(const char* stream_uri, const char* room_name, sc_frame_rect capture_rect, sc_time start_time_stamp){
+sc_streamer sc_streamer_init(const char* stream_host, const char* room_name, sc_frame_rect capture_rect, sc_time start_time_stamp){
     x264_param_t param;
     
     char *so_name = (char *) malloc (100);
     sprintf(so_name, "SC.SS.%s.Cursor", room_name);
+    
+    char *stream_uri = (char *) malloc (100);
+    sprintf(stream_uri, "rtmp://%s/screenshare/%s", stream_host, room_name);
     
     sc_streamer streamer = {.start_time_stamp = start_time_stamp,
         .stream_uri = stream_uri,
@@ -19,10 +22,17 @@ sc_streamer sc_streamer_init(const char* stream_uri, const char* room_name, sc_f
     streamer.flv_out_handle = open_flv_buffer();
     streamer.rtmp = open_RTMP_stream( stream_uri );
     
+    if(!RTMP_IsConnected(streamer.rtmp) || RTMP_IsTimedout(streamer.rtmp)) {
+        free(stream_uri);
+        char *stream_uri = (char *) malloc (100);
+        sprintf(stream_uri, "rtmpt://%s/screenshare/%s", stream_host, room_name);
+        streamer.rtmp = open_RTMP_stream( stream_uri );
+    }
+    
     x264_param_default_preset(&param, "ultrafast", "zerolatency");
     x264_param_apply_profile(&param, "baseline");
     
-    param.i_log_level  = X264_LOG_INFO;
+    param.i_log_level  = X264_LOG_ERROR;
     // param.psz_dump_yuv = (char *)"/tmp/dump.y4m";
     
     param.b_vfr_input = 1;
@@ -62,6 +72,7 @@ sc_streamer sc_streamer_init(const char* stream_uri, const char* room_name, sc_f
     
     streamer.rtmp_setup = 1;
     streamer.so_version = 0;
+    streamer.reconnect_tries = 0;
     
     return streamer;
 }
@@ -102,6 +113,7 @@ void sc_streamer_send_frame(sc_streamer streamer, sc_frame frame, sc_time frame_
 
 void sc_streamer_send_mouse_data(sc_streamer streamer, sc_mouse_coords coords, sc_time coords_time_stamp) {
     //send_invoke( streamer.rtmp, coords.x, coords.y, coords_time_stamp, streamer.room_name );
+
     update_x_y_and_timestamp(streamer.so_name, streamer.rtmp, coords.x, coords.y, coords_time_stamp, streamer.so_version);
 }
 
@@ -149,6 +161,20 @@ int main(int argc, char* argv[]) {
         sc_mouse_coords coords;
         sc_frame frame;
         
+        if(streamer.rtmp_setup == 1 && (!RTMP_IsConnected(streamer.rtmp) || RTMP_IsTimedout(streamer.rtmp))) {
+            RTMP_Close(streamer.rtmp);
+            RTMP_Free(streamer.rtmp);
+            streamer.rtmp = open_RTMP_stream( streamer.stream_uri );
+            
+            streamer.reconnect_tries++;
+            
+            if(streamer.reconnect_tries >= SC_Reconnect_Attempts) {
+                printf("Reconnected failed after %i tries", streamer.reconnect_tries);
+                sc_streamer_stop(streamer);
+                exit(1);
+            }
+        }
+        
         RTMPPacket rp;
         if(streamer.rtmp_setup == 1 && have_inital_SO != 1 && RTMP_ReadPacket(streamer.rtmp, &rp)) {
             if (RTMPPacket_IsReady(&rp) && rp.m_packetType == RTMP_PACKET_TYPE_SHARED_OBJECT)
@@ -171,7 +197,7 @@ int main(int argc, char* argv[]) {
                 break;
             case MOUSE:
                 coords = parse_mouse_coords(packet);
-                streamer.so_version ++;
+                streamer.so_version++;
                 sc_streamer_send_mouse_data(streamer, coords, packet.header.timestamp);
                 break;
             case VIDEO:
@@ -180,7 +206,6 @@ int main(int argc, char* argv[]) {
                 break;
             case NO_DATA:
             default:
-                printf("NOTHING\n");
                 break;    // maybe a wait is in order
         }
     }

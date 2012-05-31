@@ -2,6 +2,7 @@
 #define sc_streamer_h
 
 #define SC_TimeBase    1000.0
+#define SC_Reconnect_Attempts    200
 
 #include <stdint.h>
 
@@ -24,6 +25,7 @@ typedef struct {
     
     int rtmp_setup;
     int so_version;
+    int reconnect_tries;
 } sc_streamer;
 
 sc_streamer sc_streamer_init(const char* stream_uri, const char* room_name, sc_frame_rect capture_rect, sc_time start_time_stamp);

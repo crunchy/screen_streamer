@@ -29,7 +29,7 @@ flv_hnd_t *open_flv_buffer() {
 
 RTMP *open_RTMP_stream(char *stream_uri)
 {
-    RTMP_LogSetLevel(RTMP_LOGWARNING);
+    RTMP_LogSetLevel(RTMP_LOGERROR);
     RTMP *rtmp = RTMP_Alloc();
     RTMP_Init(rtmp);
     RTMP_SetupURL(rtmp, stream_uri);

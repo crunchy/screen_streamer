@@ -17,7 +17,8 @@ sc_streamer sc_streamer_init(const char* stream_host, const char* room_name, sc_
         .stream_uri = stream_uri,
         .room_name = room_name,
         .capture_rect = capture_rect,
-        .so_name = so_name};
+        .so_name = so_name,
+        .frames = 0};
     
     streamer.flv_out_handle = open_flv_buffer();
     streamer.rtmp = open_RTMP_stream( stream_uri );
@@ -33,7 +34,7 @@ sc_streamer sc_streamer_init(const char* stream_host, const char* room_name, sc_
     x264_param_apply_profile(&param, "baseline");
     
     param.i_log_level  = X264_LOG_ERROR;
-    // param.psz_dump_yuv = (char *)"/tmp/dump.y4m";
+    //param.psz_dump_yuv = (char *)"/tmp/dump.y4m";
     
     param.b_vfr_input = 1;
     param.i_keyint_min = 1;
@@ -77,12 +78,14 @@ sc_streamer sc_streamer_init(const char* stream_host, const char* room_name, sc_
     return streamer;
 }
 
-void sc_streamer_send_frame(sc_streamer streamer, sc_frame frame, sc_time frame_time_stamp) {
+void sc_streamer_send_frame(sc_streamer *streamer, sc_frame *frame, sc_time frame_time_stamp) {
     x264_picture_t pic_in, pic_out;
-    x264_picture_alloc(&pic_in, X264_CSP_I420, streamer.capture_rect.width, streamer.capture_rect.height);
-    uint8_t* YUV_frame = frame.framePtr;
+    x264_picture_alloc(&pic_in, X264_CSP_I420, streamer->capture_rect.width, streamer->capture_rect.height);
     
-    const size_t image_size = (streamer.capture_rect.width * streamer.capture_rect.height);
+    uint8_t *YUV_frame = malloc(frame->size);
+    memcpy(YUV_frame, frame->framePtr, frame->size);
+    
+    const size_t image_size = (streamer->capture_rect.width * streamer->capture_rect.height);
     
     free(pic_in.img.plane[0]);
     
@@ -90,39 +93,37 @@ void sc_streamer_send_frame(sc_streamer streamer, sc_frame frame, sc_time frame_
     pic_in.img.plane[1] = YUV_frame + image_size;
     pic_in.img.plane[2] = YUV_frame + image_size + image_size / 4;
     
-    pic_in.i_pts = floor((frame_time_stamp - streamer.start_time_stamp));
+    pic_in.i_pts = floor((frame_time_stamp - streamer->start_time_stamp));
     
     x264_nal_t* nals;
     int i_nals;
     
-    int frame_size = x264_encoder_encode(streamer.encoder, &nals, &i_nals, &pic_in, &pic_out);
-    
+    int frame_size = x264_encoder_encode(streamer->encoder, &nals, &i_nals, &pic_in, &pic_out);
     if(frame_size > 0) {
-        write_frame( streamer.flv_out_handle, streamer.rtmp, nals[0].p_payload, frame_size, &pic_out );
+        write_frame( streamer->flv_out_handle, streamer->rtmp, nals[0].p_payload, frame_size, &pic_out );
+        streamer->frames++;
     }
     
-    streamer.frames++;
     YUV_frame = NULL;
     free(YUV_frame);
     nals = NULL;
     free(nals);
     
-    // FIXME: LEAK!!!!
-    // x264_picture_clean(&pic_in);
+    x264_picture_clean(&pic_in);
 }
 
-void sc_streamer_send_mouse_data(sc_streamer streamer, sc_mouse_coords coords, sc_time coords_time_stamp) {
+void sc_streamer_send_mouse_data(sc_streamer *streamer, sc_mouse_coords *coords, sc_time coords_time_stamp) {
     //send_invoke( streamer.rtmp, coords.x, coords.y, coords_time_stamp, streamer.room_name );
 
-    update_x_y_and_timestamp(streamer.so_name, streamer.rtmp, coords.x, coords.y, coords_time_stamp, streamer.so_version);
+    update_x_y_and_timestamp(streamer->so_name, streamer->rtmp, coords->x, coords->y, coords_time_stamp, streamer->so_version);
 }
 
-void sc_streamer_stop(sc_streamer streamer) {
-    x264_encoder_close(streamer.encoder);
-    close_RTMP_stream(*streamer.flv_out_handle, streamer.rtmp);
+void sc_streamer_stop(sc_streamer *streamer) {
+    x264_encoder_close(streamer->encoder);
+    close_RTMP_stream(*streamer->flv_out_handle, streamer->rtmp);
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) {  
     char c, *streamUri, *roomName, *inFile;
     sc_frame_rect rect;
     
@@ -170,7 +171,7 @@ int main(int argc, char* argv[]) {
             
             if(streamer.reconnect_tries >= SC_Reconnect_Attempts) {
                 printf("Reconnected failed after %i tries", streamer.reconnect_tries);
-                sc_streamer_stop(streamer);
+                sc_streamer_stop(&streamer);
                 exit(1);
             }
         }
@@ -192,17 +193,17 @@ int main(int argc, char* argv[]) {
                 streamer = sc_streamer_init(streamUri, roomName, rect, packet.header.timestamp);
                 break;
             case STOP:
-                sc_streamer_stop(streamer);
+                sc_streamer_stop(&streamer);
                 exit(1);
                 break;
             case MOUSE:
                 coords = parse_mouse_coords(packet);
                 streamer.so_version++;
-                sc_streamer_send_mouse_data(streamer, coords, packet.header.timestamp);
+                sc_streamer_send_mouse_data(&streamer, &coords, packet.header.timestamp);
                 break;
             case VIDEO:
                 frame = parse_frame(packet);
-                sc_streamer_send_frame(streamer, frame, packet.header.timestamp);
+                sc_streamer_send_frame(&streamer, &frame, packet.header.timestamp);
                 break;
             case NO_DATA:
             default:

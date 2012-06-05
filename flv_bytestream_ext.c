@@ -23,7 +23,7 @@ flv_hnd_t *open_flv_buffer() {
     memset( c, 0, sizeof(*c) );
 
     p_flv->c = c;
-    p_flv->b_dts_compress = 1;
+    p_flv->b_dts_compress = 0;
     return p_flv;
 }
 

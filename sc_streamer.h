@@ -23,14 +23,17 @@ typedef struct {
 
     x264_t* encoder;
     
-    int rtmp_setup;
-    int so_version;
-    int reconnect_tries;
+    uint8_t rtmp_setup;
+    uint8_t rtmpt;
+    uint16_t so_version;
+    uint8_t reconnect_tries;
 } sc_streamer;
 
-sc_streamer sc_streamer_init(const char* stream_host, const char* room_name, sc_frame_rect capture_rect, sc_time start_time_stamp);
+sc_streamer sc_streamer_init_video(const char* stream_host, const char* room_name, sc_frame_rect capture_rect, sc_time start_time_stamp);
+sc_streamer sc_streamer_init_cursor(const char* stream_host, const char* room_name, sc_time start_time_stamp);
 void sc_streamer_send_frame(sc_streamer *streamer, sc_frame *frame, sc_time frame_time_stamp);
 void sc_streamer_send_mouse_data(sc_streamer *streamer, sc_mouse_coords *coords, sc_time coords_time_stamp);
-void sc_streamer_stop(sc_streamer *streamer);
+void sc_streamer_stop_video(sc_streamer *streamer);
+void sc_streamer_stop_cursor(sc_streamer *streamer);
 
 #endif

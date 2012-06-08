@@ -24,15 +24,15 @@ tpl_bin create_body(void *addr, int sz) {
   return body;
 }
 
-sc_bytestream_packet sc_bytestream_put_start(int fd) {
-  sc_bytestream_packet packet = {create_header(START), create_body(NULL, 0)};
+sc_bytestream_packet sc_bytestream_put_video_start(int fd) {
+  sc_bytestream_packet packet = {create_header(STARTVIDEO), create_body(NULL, 0)};
 
   serialize_packet(fd, packet);
   return packet;
 }
 
-sc_bytestream_packet sc_bytestream_put_stop(int fd) {
-  sc_bytestream_packet packet = {create_header(STOP), create_body(NULL, 0)};
+sc_bytestream_packet sc_bytestream_put_video_stop(int fd) {
+  sc_bytestream_packet packet = {create_header(STOPVIDEO), create_body(NULL, 0)};
 
   serialize_packet(fd, packet);
   return packet;

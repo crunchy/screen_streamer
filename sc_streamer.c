@@ -4,11 +4,8 @@
 
 extern tpl_hook_t tpl_hook;
 
-sc_streamer sc_streamer_init(const char* stream_host, const char* room_name, sc_frame_rect capture_rect, sc_time start_time_stamp){
+sc_streamer sc_streamer_init_video(const char* stream_host, const char* room_name, sc_frame_rect capture_rect, sc_time start_time_stamp){
     x264_param_t param;
-    
-    char *so_name = (char *) malloc (100);
-    sprintf(so_name, "SC.SS.%s.Cursor", room_name);
     
     char *stream_uri = (char *) malloc (100);
     sprintf(stream_uri, "rtmp://%s/screenshare/%s", stream_host, room_name);
@@ -17,13 +14,14 @@ sc_streamer sc_streamer_init(const char* stream_host, const char* room_name, sc_
         .stream_uri = stream_uri,
         .room_name = room_name,
         .capture_rect = capture_rect,
-        .so_name = so_name,
-        .frames = 0};
+        .frames = 0,
+        .rtmpt = 0};
     
     streamer.flv_out_handle = open_flv_buffer();
     streamer.rtmp = open_RTMP_stream( stream_uri );
     
     if(!RTMP_IsConnected(streamer.rtmp) || RTMP_IsTimedout(streamer.rtmp)) {
+        streamer.rtmpt = 1;
         free(stream_uri);
         char *stream_uri = (char *) malloc (100);
         sprintf(stream_uri, "rtmpt://%s/screenshare/%s", stream_host, room_name);
@@ -66,10 +64,41 @@ sc_streamer sc_streamer_init(const char* stream_host, const char* room_name, sc_
     
     x264_encoder_headers( streamer.encoder, &headers, &i_nal );
     write_headers( streamer.flv_out_handle, streamer.rtmp, headers );
-    setup_shared_object(streamer.so_name, streamer.rtmp);
     
     headers = NULL;
     free(headers);
+    
+    streamer.rtmp_setup = 1;
+    streamer.reconnect_tries = 0;
+    
+    return streamer;
+}
+
+sc_streamer sc_streamer_init_cursor(const char* stream_host, const char* room_name, sc_time start_time_stamp){   
+    char *so_name = (char *) malloc (100);
+    sprintf(so_name, "SC.SS.%s.Cursor", room_name);
+    
+    char *stream_uri = (char *) malloc (100);
+    sprintf(stream_uri, "rtmp://%s/screenshare/%s-cursor", stream_host, room_name);
+    
+    sc_streamer streamer = {.start_time_stamp = start_time_stamp,
+        .stream_uri = stream_uri,
+        .room_name = room_name,
+        .so_name = so_name,
+        .rtmpt = 0};
+    
+    streamer.flv_out_handle = open_flv_buffer();
+    streamer.rtmp = open_RTMP_stream( stream_uri );
+    
+    if(!RTMP_IsConnected(streamer.rtmp) || RTMP_IsTimedout(streamer.rtmp)) {
+        streamer.rtmpt = 1;
+        free(stream_uri);
+        char *stream_uri = (char *) malloc (100);
+        sprintf(stream_uri, "rtmpt://%s/screenshare/%s-cursor", stream_host, room_name);
+        streamer.rtmp = open_RTMP_stream( stream_uri );
+    }
+    
+    setup_shared_object(streamer.so_name, streamer.rtmp);
     
     streamer.rtmp_setup = 1;
     streamer.so_version = 0;
@@ -114,12 +143,19 @@ void sc_streamer_send_frame(sc_streamer *streamer, sc_frame *frame, sc_time fram
 
 void sc_streamer_send_mouse_data(sc_streamer *streamer, sc_mouse_coords *coords, sc_time coords_time_stamp) {
     //send_invoke( streamer.rtmp, coords.x, coords.y, coords_time_stamp, streamer.room_name );
-
+    sc_mouse_coords *ret_coords = malloc(sizeof(sc_mouse_coords));
+    memcpy(ret_coords, coords, sizeof(sc_mouse_coords));
+    
+    printf("sending SO: %i\n", streamer->so_version);
     update_x_y_and_timestamp(streamer->so_name, streamer->rtmp, coords->x, coords->y, coords_time_stamp, streamer->so_version);
 }
 
-void sc_streamer_stop(sc_streamer *streamer) {
+void sc_streamer_stop_video(sc_streamer *streamer) {
     x264_encoder_close(streamer->encoder);
+    close_RTMP_stream(*streamer->flv_out_handle, streamer->rtmp);
+}
+
+void sc_streamer_stop_cursor(sc_streamer *streamer) {
     close_RTMP_stream(*streamer->flv_out_handle, streamer->rtmp);
 }
 
@@ -171,13 +207,17 @@ int main(int argc, char* argv[]) {
             
             if(streamer.reconnect_tries >= SC_Reconnect_Attempts) {
                 printf("Reconnected failed after %i tries", streamer.reconnect_tries);
-                sc_streamer_stop(&streamer);
+                if(streamer.so_name != NULL) {
+                    sc_streamer_stop_cursor(&streamer);
+                } else {
+                    sc_streamer_stop_video(&streamer);
+                }
                 exit(1);
             }
         }
         
         RTMPPacket rp;
-        if(streamer.rtmp_setup == 1 && have_inital_SO != 1 && RTMP_ReadPacket(streamer.rtmp, &rp)) {
+        if(streamer.rtmp_setup == 1  && streamer.so_name != NULL && have_inital_SO != 1 && RTMP_ReadPacket(streamer.rtmp, &rp)) {
             if (RTMPPacket_IsReady(&rp) && rp.m_packetType == RTMP_PACKET_TYPE_SHARED_OBJECT)
             {
                 AVal SO_name;
@@ -189,11 +229,18 @@ int main(int argc, char* argv[]) {
         }
         
         switch(packet.header.type) {
-            case START:
-                streamer = sc_streamer_init(streamUri, roomName, rect, packet.header.timestamp);
+            case STARTVIDEO:
+                streamer = sc_streamer_init_video(streamUri, roomName, rect, packet.header.timestamp);
                 break;
-            case STOP:
-                sc_streamer_stop(&streamer);
+            case STOPVIDEO:
+                sc_streamer_stop_video(&streamer);
+                exit(1);
+                break;
+            case STARTCURSOR:
+                streamer = sc_streamer_init_cursor(streamUri, roomName, packet.header.timestamp);
+                break;
+            case STOPCURSOR:
+                sc_streamer_stop_cursor(&streamer);
                 exit(1);
                 break;
             case MOUSE:

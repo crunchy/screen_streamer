@@ -16,10 +16,12 @@
 
 #define SC_TimeBase    1000.0
 
-#define STOP  0x01
-#define START 0x02
+#define STOPVIDEO  0x01
+#define STARTVIDEO 0x02
 #define MOUSE 0x03
 #define VIDEO 0x04
+#define STOPCURSOR  0x05
+#define STARTCURSOR 0x06
 #define NO_DATA 0xFF
 
 typedef uint32_t sc_time;
@@ -51,8 +53,8 @@ typedef struct {
   tpl_bin body;
 } sc_bytestream_packet;
 
-sc_bytestream_packet sc_bytestream_put_start(int fd);
-sc_bytestream_packet sc_bytestream_put_stop(int fd);
+sc_bytestream_packet sc_bytestream_put_start_video(int fd);
+sc_bytestream_packet sc_bytestream_put_stop_video(int fd);
 sc_bytestream_packet sc_bytestream_put_mouse_data(int fd, sc_mouse_coords coords);
 sc_bytestream_packet sc_bytestream_put_frame(int fd, sc_frame frame, sc_time timestamp);
 

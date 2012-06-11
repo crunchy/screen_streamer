@@ -146,8 +146,8 @@ void sc_streamer_send_mouse_data(sc_streamer *streamer, sc_mouse_coords *coords,
     sc_mouse_coords *ret_coords = malloc(sizeof(sc_mouse_coords));
     memcpy(ret_coords, coords, sizeof(sc_mouse_coords));
     
-    printf("sending SO: %i\n", streamer->so_version);
     update_x_y_and_timestamp(streamer->so_name, streamer->rtmp, coords->x, coords->y, coords_time_stamp, streamer->so_version);
+    free(ret_coords);
 }
 
 void sc_streamer_stop_video(sc_streamer *streamer) {
@@ -216,7 +216,7 @@ int main(int argc, char* argv[]) {
             }
         }
         
-        RTMPPacket rp;
+        RTMPPacket rp = { 0 };
         if(streamer.rtmp_setup == 1  && streamer.so_name != NULL && have_inital_SO != 1 && RTMP_ReadPacket(streamer.rtmp, &rp)) {
             if (RTMPPacket_IsReady(&rp) && rp.m_packetType == RTMP_PACKET_TYPE_SHARED_OBJECT)
             {

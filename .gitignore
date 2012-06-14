@@ -1,6 +1,7 @@
 *.o
 .DS_Store
 screen_streamer
+screen_streamer.exe
 *.o
 
 build/

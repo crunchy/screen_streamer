@@ -30,29 +30,30 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <tbb/tbbmalloc_proxy.h>
 #endif /* Intel Compiler efficient memcpy etc */
 
-#ifdef _MSC_VER
+/*#ifdef _MSC_VER
 typedef unsigned int uint32_t;
-#else
+#else */
 #include <inttypes.h>   /* uint32_t */
-#endif
+/*#endif*/
 
 #if defined __cplusplus
 extern "C" {
 #endif
 
+/*
 #ifdef _WIN32
 #ifdef TPL_EXPORTS
 #define TPL_API __declspec(dllexport)
-#else							/*  */
+#else							/* 
 #ifdef TPL_NOLIB
 #define TPL_API
 #else
 #define TPL_API __declspec(dllimport)
-#endif /* TPL_NOLIB */
-#endif	/* TPL_EXPORTS*/
-#else
+#endif /* TPL_NOLIB 
+#endif	/* TPL_EXPORTS
+#else*/
 #define TPL_API
-#endif
+/*#endif*/
 
 /* bit flags (external) */
 #define TPL_FILE      (1 << 0)

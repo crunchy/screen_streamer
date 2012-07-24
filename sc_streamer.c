@@ -2,10 +2,28 @@
 #include <stdarg.h>
 #include <sys/time.h>
 
-extern tpl_hook_t tpl_hook;
+#ifdef _WIN32
+#include <winsock.h>
+#include <fcntl.h>
+unsigned int _CRT_fmode = _O_BINARY;
+#endif
+
+void sc_streamer_setup_windows() {
+	#ifdef _WIN32
+    WSADATA wsaData;
+	WSAStartup(MAKEWORD(1, 1), &wsaData);
+	#endif
+}
+
+void sc_streamer_teardown_windows() {
+    #ifdef _WIN32
+	WSACleanup();
+	#endif
+}
 
 sc_streamer sc_streamer_init_video(const char* stream_host, const char* room_name, sc_frame_rect capture_rect, sc_time start_time_stamp){
-    x264_param_t param;
+	sc_streamer_setup_windows();
+	x264_param_t param;
     
     char *stream_uri = (char *) malloc (100);
     sprintf(stream_uri, "rtmp://%s/screenshare/%s", stream_host, room_name);
@@ -32,7 +50,7 @@ sc_streamer sc_streamer_init_video(const char* stream_host, const char* room_nam
     x264_param_apply_profile(&param, "baseline");
     
     param.i_log_level  = X264_LOG_ERROR;
-    //param.psz_dump_yuv = (char *)"/tmp/dump.y4m";
+    //param.psz_dump_yuv = (char *)"dump.y4m";
     
     param.b_vfr_input = 1;
     param.i_keyint_min = 1;
@@ -74,7 +92,9 @@ sc_streamer sc_streamer_init_video(const char* stream_host, const char* room_nam
     return streamer;
 }
 
-sc_streamer sc_streamer_init_cursor(const char* stream_host, const char* room_name, sc_time start_time_stamp){   
+sc_streamer sc_streamer_init_cursor(const char* stream_host, const char* room_name, sc_time start_time_stamp){
+	sc_streamer_setup_windows();
+
     char *so_name = (char *) malloc (100);
     sprintf(so_name, "SC.SS.%s.Cursor", room_name);
     
@@ -109,36 +129,33 @@ sc_streamer sc_streamer_init_cursor(const char* stream_host, const char* room_na
 
 void sc_streamer_send_frame(sc_streamer *streamer, sc_frame *frame, sc_time frame_time_stamp) {
     x264_picture_t pic_in, pic_out;
-    x264_picture_alloc(&pic_in, X264_CSP_I420, streamer->capture_rect.width, streamer->capture_rect.height);
-    
-    uint8_t *YUV_frame = malloc(frame->size);
-    memcpy(YUV_frame, frame->framePtr, frame->size);
+  
+	x264_picture_alloc(&pic_in, X264_CSP_I420, streamer->capture_rect.width, streamer->capture_rect.height);
     
     const size_t image_size = (streamer->capture_rect.width * streamer->capture_rect.height);
-    
-    free(pic_in.img.plane[0]);
-    
-    pic_in.img.plane[0] = YUV_frame;
-    pic_in.img.plane[1] = YUV_frame + image_size;
-    pic_in.img.plane[2] = YUV_frame + image_size + image_size / 4;
+  
+    x264_free(pic_in.img.plane[0]);
+	
+    pic_in.img.plane[0] = frame->framePtr;
+    pic_in.img.plane[1] = frame->framePtr + image_size;
+    pic_in.img.plane[2] = frame->framePtr + image_size + image_size / 4;
     
     pic_in.i_pts = floor((frame_time_stamp - streamer->start_time_stamp));
-    
     x264_nal_t* nals;
     int i_nals;
-    
     int frame_size = x264_encoder_encode(streamer->encoder, &nals, &i_nals, &pic_in, &pic_out);
+	
     if(frame_size > 0) {
         write_frame( streamer->flv_out_handle, streamer->rtmp, nals[0].p_payload, frame_size, &pic_out );
-        streamer->frames++;
+        
+		streamer->frames++;
     }
     
-    YUV_frame = NULL;
-    free(YUV_frame);
+	
     nals = NULL;
     free(nals);
     
-    x264_picture_clean(&pic_in);
+	//x264_picture_clean(&pic_in);
 }
 
 void sc_streamer_send_mouse_data(sc_streamer *streamer, sc_mouse_coords *coords, sc_time coords_time_stamp) {
@@ -177,16 +194,13 @@ int main(int argc, char* argv[]) {
             case 'r':
                 roomName = optarg;
                 break;
-                // case 'f':
-                //     inFile = optarg;
-                //     break;
                 
         }
     }
     
     printf("Started streamer with width: %i, height: %i, URI: %s, roomName: %s\n", rect.width, rect.height, streamUri, roomName);
     
-    // FILE *stream = freopen(inFile, "r", stdin);
+    //FILE *stream = freopen(inFile, "r", stdin);
     int fd = fileno(stdin);
     
     sc_streamer streamer;
@@ -230,28 +244,31 @@ int main(int argc, char* argv[]) {
         
         switch(packet.header.type) {
             case STARTVIDEO:
-                streamer = sc_streamer_init_video(streamUri, roomName, rect, packet.header.timestamp);
+				streamer = sc_streamer_init_video(streamUri, roomName, rect, packet.header.timestamp);
                 break;
             case STOPVIDEO:
-                sc_streamer_stop_video(&streamer);
+				sc_streamer_stop_video(&streamer);
+				sc_streamer_teardown_windows();
                 exit(1);
                 break;
             case STARTCURSOR:
-                streamer = sc_streamer_init_cursor(streamUri, roomName, packet.header.timestamp);
+				streamer = sc_streamer_init_cursor(streamUri, roomName, packet.header.timestamp);
                 break;
             case STOPCURSOR:
-                sc_streamer_stop_cursor(&streamer);
+				sc_streamer_stop_cursor(&streamer);
+				sc_streamer_teardown_windows();
                 exit(1);
                 break;
             case MOUSE:
-                coords = parse_mouse_coords(packet);
+				coords = parse_mouse_coords(packet);
                 streamer.so_version++;
                 sc_streamer_send_mouse_data(&streamer, &coords, packet.header.timestamp);
                 break;
             case VIDEO:
-                frame = parse_frame(packet);
-                sc_streamer_send_frame(&streamer, &frame, packet.header.timestamp);
-                break;
+				frame = parse_frame(packet);
+				sc_streamer_send_frame(&streamer, &frame, packet.header.timestamp);
+				free(frame.framePtr);
+				break;
             case NO_DATA:
             default:
                 break;    // maybe a wait is in order

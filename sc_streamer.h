@@ -35,5 +35,7 @@ void sc_streamer_send_frame(sc_streamer *streamer, sc_frame *frame, sc_time fram
 void sc_streamer_send_mouse_data(sc_streamer *streamer, sc_mouse_coords *coords, sc_time coords_time_stamp);
 void sc_streamer_stop_video(sc_streamer *streamer);
 void sc_streamer_stop_cursor(sc_streamer *streamer);
+void sc_streamer_setup_windows();
+void sc_streamer_teardown_windows();
 
 #endif

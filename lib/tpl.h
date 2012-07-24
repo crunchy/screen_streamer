@@ -32,9 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /*#ifdef _MSC_VER
 typedef unsigned int uint32_t;
-#else */
+#else*/ 
 #include <inttypes.h>   /* uint32_t */
-/*#endif*/
+//#endif
 
 #if defined __cplusplus
 extern "C" {

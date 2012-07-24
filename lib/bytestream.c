@@ -119,9 +119,6 @@ sc_bytestream_packet deserialize_packet(int fd) {
   packet.body = data;
 
   tpl_free(tn);
-  if(data.addr != NULL) {
-    free(data.addr);
-  }
 
   return packet;
 }

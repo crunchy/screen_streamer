@@ -34,8 +34,14 @@ $(X264)/libx264.a :
 	@cd $(X264) && $(MAKE)
 
 install :
-	cp screen_streamer ../screenshare/ScreenShareOSXClient
-
+ifeq ($(OS),Windows_NT)
+	cp screen_streamer.exe ../screenshare/ScreenShareWindowsClient/Additional\ Release\ Files
+	cp screen_streamer.exe ../screenshare/ScreenShareWindowsClient/Debug
+	cp screen_streamer.exe ../screenshare/ScreenShareWindowsClient/Release
+else 
+  cp screen_streamer ../screenshare/ScreenShareOSXClient
+endif
+ 
 mmap.o : $(LIB)/win/mmap.c
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(LIB)/win/mmap.c
 

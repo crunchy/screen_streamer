@@ -39,7 +39,7 @@ ifeq ($(OS),Windows_NT)
 	cp screen_streamer.exe ../screenshare/ScreenShareWindowsClient/Debug
 	cp screen_streamer.exe ../screenshare/ScreenShareWindowsClient/Release
 else 
-  cp screen_streamer ../screenshare/ScreenShareOSXClient
+	cp screen_streamer ../screenshare/ScreenShareOSXClient
 endif
  
 mmap.o : $(LIB)/win/mmap.c

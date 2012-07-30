@@ -50,11 +50,11 @@ sc_streamer sc_streamer_init_video(const char* stream_host, const char* room_nam
     x264_param_apply_profile(&param, "baseline");
     
     param.i_log_level  = X264_LOG_ERROR;
-    //param.psz_dump_yuv = (char *)"dump.y4m";
+//    param.psz_dump_yuv = (char *)"/tmp/dump.y4m";
     
     param.b_vfr_input = 1;
-    param.i_keyint_min = 1;
-    param.i_keyint_max = 15;
+//    param.i_keyint_min = 1;
+//    param.i_keyint_max = 15;
     
     param.i_width = capture_rect.width;
     param.i_height = capture_rect.height;

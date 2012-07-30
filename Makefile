@@ -6,7 +6,7 @@ RTMP = librtmp/librtmp
 CPPFLAGS += -I$(X264) -I$(RTMP) -I$(LIB)
 
 # Flags passed to the C++ compiler.
-CXXFLAGS += -g -Wall -Wextra -std=c99
+CXXFLAGS += -s -Os -g -Wall -Wextra -std=c99
 
 CXX = gcc
 
@@ -31,7 +31,7 @@ $(RTMP)/librtmp.a :
 	@cd $(RTMP) && $(MAKE) SHARED= SYS=$(SYS) CRYPTO=
 		
 $(X264)/libx264.a :
-	@cd $(X264) && $(MAKE)
+	@cd $(X264) && ./configure --disable-cli --enable-static --enable-strip && $(MAKE)
 
 install :
 ifeq ($(OS),Windows_NT)

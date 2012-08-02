@@ -17,7 +17,7 @@ ifeq ($(OS),Windows_NT)
 else
 	BUILD = screen_streamer
 	SYS = posix
-	CXXFLAGS += -arch x86_64
+	CXXFLAGS += -arch x86_64 -arch i386
 endif
 
 # House-keeping build targets.

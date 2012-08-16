@@ -49,9 +49,9 @@ int close_RTMP_stream(flv_hnd_t handle, RTMP *rtmp)
     RTMP_Close(rtmp);
     RTMP_Free(rtmp);
 
-    fclose( c->fp );
-    // FIXME: LEAK!!!!
-    // free( p_flv );
+	if(c->fp)
+	    fclose( c->fp );
+    
     free( c );
 
     return 0;

@@ -170,10 +170,12 @@ void sc_streamer_send_mouse_data(sc_streamer *streamer, sc_mouse_coords *coords,
 void sc_streamer_stop_video(sc_streamer *streamer) {
     x264_encoder_close(streamer->encoder);
     close_RTMP_stream(*streamer->flv_out_handle, streamer->rtmp);
+	free(streamer->flv_out_handle);
 }
 
 void sc_streamer_stop_cursor(sc_streamer *streamer) {
     close_RTMP_stream(*streamer->flv_out_handle, streamer->rtmp);
+	free(streamer->flv_out_handle);
 }
 
 int main(int argc, char* argv[]) {  

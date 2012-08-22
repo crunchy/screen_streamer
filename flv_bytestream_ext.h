@@ -34,18 +34,19 @@ typedef struct
     int b_dts_compress;
 
     unsigned start;
-} flv_hnd_t;
+} rtmp_flv_hnd_t;
 
-flv_hnd_t *open_flv_buffer();
+rtmp_flv_hnd_t *open_flv_buffer();
 RTMP *open_RTMP_stream( char *stream_uri );
-int close_RTMP_stream(flv_hnd_t handle, RTMP *rtmp);
+int close_RTMP_stream(rtmp_flv_hnd_t handle, RTMP *rtmp);
 
 int flv_flush_RTMP_data( RTMP *rtmp, flv_buffer *c );
 int send_invoke( RTMP *rtmp, uint16_t x, uint16_t y, uint32_t timestamp, const char* room_name );
 
-int set_param( hnd_t handle, x264_param_t *p_param );
-int write_headers( hnd_t handle, RTMP *rtmp, x264_nal_t *p_nal );
-int write_frame( hnd_t handle, RTMP *rtmp, uint8_t *p_nalu, int i_size, x264_picture_t *p_picture );
+int write_RTMP_header( hnd_t handle, RTMP *rtmp);
+int set_RTMP_param( hnd_t handle, x264_param_t *p_param );
+int write_RTMP_headers( hnd_t handle, RTMP *rtmp, x264_nal_t *p_nal );
+int write_RTMP_frame( hnd_t handle, RTMP *rtmp, uint8_t *p_nalu, int i_size, x264_picture_t *p_picture );
 
 void setup_shared_object(const char *shared_object, RTMP *rtmp);
 void update_x_y_and_timestamp(const char *shared_object, RTMP *rtmp, uint16_t x, uint16_t y, uint64_t timestamp, int so_version);

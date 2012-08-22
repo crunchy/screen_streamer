@@ -8,6 +8,7 @@
 unsigned int _CRT_fmode = _O_BINARY;
 #endif
 
+
 void sc_streamer_setup_windows() {
 	#ifdef _WIN32
     WSADATA wsaData;
@@ -22,7 +23,7 @@ void sc_streamer_teardown_windows() {
 }
 
 sc_streamer sc_streamer_init_video(const char* stream_host, const char* room_name, sc_frame_rect capture_rect, sc_time start_time_stamp){
-	sc_streamer_setup_windows();
+    sc_streamer_setup_windows();
 	x264_param_t param;
     
     char *stream_uri = (char *) malloc (100);
@@ -34,7 +35,7 @@ sc_streamer sc_streamer_init_video(const char* stream_host, const char* room_nam
         .capture_rect = capture_rect,
         .frames = 0,
         .rtmpt = 0};
-    
+
     streamer.flv_out_handle = open_flv_buffer();
     streamer.rtmp = open_RTMP_stream( stream_uri );
     
@@ -46,15 +47,15 @@ sc_streamer sc_streamer_init_video(const char* stream_host, const char* room_nam
         streamer.rtmp = open_RTMP_stream( stream_uri );
     }
     
-    x264_param_default_preset(&param, "ultrafast", "zerolatency");
-    x264_param_apply_profile(&param, "baseline");
+    write_RTMP_header(streamer.flv_out_handle, streamer.rtmp);
+    
+    x264_param_default_preset(&param, "veryfast", "zerolatency");
     
     param.i_log_level  = X264_LOG_ERROR;
-//    param.psz_dump_yuv = (char *)"/tmp/dump.y4m";
+    //param.psz_dump_yuv = (char *)"/tmp/dump.y4m";
     
     param.b_vfr_input = 1;
-//    param.i_keyint_min = 1;
-//    param.i_keyint_max = 15;
+    param.i_keyint_max = 30;
     
     param.i_width = capture_rect.width;
     param.i_height = capture_rect.height;
@@ -64,24 +65,25 @@ sc_streamer sc_streamer_init_video(const char* stream_host, const char* room_nam
     param.rc.i_rc_method = X264_RC_CRF;
     
     param.i_slice_max_size = 1024;
-    param.rc.i_vbv_max_bitrate = 1000;
+    param.rc.i_vbv_max_bitrate = 1024;
     param.rc.i_vbv_buffer_size = 2000;
-    param.rc.f_rf_constant = 30;
-    
-    //    intra-refresh doesn't work w\ flash. Flash won't jump in w\out a keyframe
+    param.rc.f_rf_constant = 23;
+    param.b_sliced_threads = 0;
+    param.b_intra_refresh = 1;
     param.b_repeat_headers = 1;
     param.b_annexb = 0;
-    param.i_bframe = 0;
+    
+    x264_param_apply_profile(&param, "main");
     
     streamer.encoder = x264_encoder_open(&param);
     
-    set_param( streamer.flv_out_handle, &param );
+    set_RTMP_param( streamer.flv_out_handle, &param );
     
     x264_nal_t *headers;
     int i_nal;
     
     x264_encoder_headers( streamer.encoder, &headers, &i_nal );
-    write_headers( streamer.flv_out_handle, streamer.rtmp, headers );
+    write_RTMP_headers( streamer.flv_out_handle, streamer.rtmp, headers );
     
     headers = NULL;
     free(headers);
@@ -140,14 +142,16 @@ void sc_streamer_send_frame(sc_streamer *streamer, sc_frame *frame, sc_time fram
     pic_in.img.plane[1] = frame->framePtr + image_size;
     pic_in.img.plane[2] = frame->framePtr + image_size + image_size / 4;
     
+
     pic_in.i_pts = floor((frame_time_stamp - streamer->start_time_stamp));
+    
+    
     x264_nal_t* nals;
     int i_nals;
     int frame_size = x264_encoder_encode(streamer->encoder, &nals, &i_nals, &pic_in, &pic_out);
 	
     if(frame_size > 0) {
-        write_frame( streamer->flv_out_handle, streamer->rtmp, nals[0].p_payload, frame_size, &pic_out );
-        
+        write_RTMP_frame( streamer->flv_out_handle, streamer->rtmp, nals[0].p_payload, frame_size, &pic_out );
 		streamer->frames++;
     }
     

@@ -10,7 +10,7 @@
 #include "flv_bytestream_ext.h"
 
 typedef struct {
-    flv_hnd_t *flv_out_handle;
+    rtmp_flv_hnd_t *flv_out_handle;
     RTMP *rtmp;
 
     uint16_t frames;

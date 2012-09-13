@@ -8,6 +8,11 @@
 unsigned int _CRT_fmode = _O_BINARY;
 #endif
 
+char *streamUri, *roomName;
+sc_frame_rect capture_rect;
+sc_time start_time_stamp;
+sc_streamer streamer;
+
 
 void sc_streamer_setup_windows() {
 	#ifdef _WIN32
@@ -40,6 +45,7 @@ sc_streamer sc_streamer_init_video(const char* stream_host, const char* room_nam
     streamer.rtmp = open_RTMP_stream( stream_uri );
     
     if(!RTMP_IsConnected(streamer.rtmp) || RTMP_IsTimedout(streamer.rtmp)) {
+        printf("Using rtmpt \n");
         streamer.rtmpt = 1;
         free(stream_uri);
         char *stream_uri = (char *) malloc (100);
@@ -107,7 +113,8 @@ sc_streamer sc_streamer_init_cursor(const char* stream_host, const char* room_na
         .stream_uri = stream_uri,
         .room_name = room_name,
         .so_name = so_name,
-        .rtmpt = 0};
+        .rtmpt = 0,
+        .have_inital_SO = 0};
     
     streamer.flv_out_handle = open_flv_buffer();
     streamer.rtmp = open_RTMP_stream( stream_uri );
@@ -182,11 +189,49 @@ void sc_streamer_stop_cursor(sc_streamer *streamer) {
 	free(streamer->flv_out_handle);
 }
 
-int main(int argc, char* argv[]) {  
-    char c, *streamUri, *roomName, *inFile;
+void sc_streamer_reconnect(sc_streamer *streamer) {
+    printf("Reconnecting \n");
+    RTMP_Close(streamer->rtmp);
+    RTMP_Free(streamer->rtmp);
+    streamer->rtmp = open_RTMP_stream( streamer->stream_uri );
+    
+    streamer->reconnect_tries++;
+    
+    if(streamer->reconnect_tries >= SC_Reconnect_Attempts) {
+        printf("Reconnected failed after %i tries \n", streamer->reconnect_tries);
+        if(streamer->so_name != NULL) {
+            sc_streamer_stop_cursor(streamer);
+        } else {
+            sc_streamer_stop_video(streamer);
+        }
+        exit(1);
+    } 
+}
+
+void sc_streamer_restart() {
+    printf("Restarting \n");
+    if(streamer.so_name != NULL) {
+        sc_streamer_stop_cursor(&streamer);
+        streamer = sc_streamer_init_cursor(streamUri, roomName, start_time_stamp);
+    } else {
+        sc_streamer_stop_video(&streamer);
+        streamer = sc_streamer_init_video(streamUri, roomName, capture_rect, start_time_stamp);
+    }
+}
+
+void sig_pipe_handler(int s) {
+    printf("Caught SIGPIPE\n");
+    sc_streamer_restart();
+}
+
+int main(int argc, char* argv[]) {
+    char c, *inFile;
+    inFile = NULL;
     sc_frame_rect rect;
     
-    while ((c = getopt (argc, argv, "w:h:u:r:")) != -1) {
+    signal(SIGPIPE, sig_pipe_handler);
+    
+    while ((c = getopt (argc, argv, "w:h:u:r:f:")) != -1) {
         switch (c) {
             case 'w':
                 rect.width = (uint16_t) atoi(optarg);
@@ -200,17 +245,20 @@ int main(int argc, char* argv[]) {
             case 'r':
                 roomName = optarg;
                 break;
-                
+            case 'f':
+                inFile = optarg;
+                break;
         }
     }
     
-    printf("Started streamer with width: %i, height: %i, URI: %s, roomName: %s\n", rect.width, rect.height, streamUri, roomName);
-    
-    //FILE *stream = freopen(inFile, "r", stdin);
-    int fd = fileno(stdin);
-    
-    sc_streamer streamer;
-    int have_inital_SO = 0;
+    int fd;
+    if(inFile) {
+        printf("Started streamer with width: %i, height: %i, URI: %s, roomName: %s, File: %s\n", rect.width, rect.height, streamUri, roomName, inFile);
+        fd = open(inFile, O_RDONLY);
+    } else {
+        printf("Started streamer with width: %i, height: %i, URI: %s, roomName: %s \n", rect.width, rect.height, streamUri, roomName);
+        fd = fileno(stdin);
+    }
     
     // main processing loop
     while(TRUE) {
@@ -219,38 +267,26 @@ int main(int argc, char* argv[]) {
         sc_frame frame;
         
         if(streamer.rtmp_setup == 1 && (!RTMP_IsConnected(streamer.rtmp) || RTMP_IsTimedout(streamer.rtmp))) {
-            RTMP_Close(streamer.rtmp);
-            RTMP_Free(streamer.rtmp);
-            streamer.rtmp = open_RTMP_stream( streamer.stream_uri );
-            
-            streamer.reconnect_tries++;
-            
-            if(streamer.reconnect_tries >= SC_Reconnect_Attempts) {
-                printf("Reconnected failed after %i tries", streamer.reconnect_tries);
-                if(streamer.so_name != NULL) {
-                    sc_streamer_stop_cursor(&streamer);
-                } else {
-                    sc_streamer_stop_video(&streamer);
-                }
-                exit(1);
-            }
+            sc_streamer_reconnect(&streamer);
         }
         
         RTMPPacket rp = { 0 };
-        if(streamer.rtmp_setup == 1  && streamer.so_name != NULL && have_inital_SO != 1 && RTMP_ReadPacket(streamer.rtmp, &rp)) {
+        if(streamer.rtmp_setup == 1  && streamer.so_name != NULL && streamer.have_inital_SO != 1 && RTMP_ReadPacket(streamer.rtmp, &rp)) {
             if (RTMPPacket_IsReady(&rp) && rp.m_packetType == RTMP_PACKET_TYPE_SHARED_OBJECT)
             {
                 AVal SO_name;
                 AMF_DecodeString(rp.m_body, &SO_name);
                 
                 streamer.so_version = AMF_DecodeInt32(rp.m_body+2+SO_name.av_len);
-                have_inital_SO = 1;
+                streamer.have_inital_SO = 1;
             }
         }
         
         switch(packet.header.type) {
             case STARTVIDEO:
-				streamer = sc_streamer_init_video(streamUri, roomName, rect, packet.header.timestamp);
+                capture_rect = rect;
+                start_time_stamp = packet.header.timestamp;
+                streamer = sc_streamer_init_video(streamUri, roomName, capture_rect, start_time_stamp);
                 break;
             case STOPVIDEO:
 				sc_streamer_stop_video(&streamer);
@@ -258,7 +294,8 @@ int main(int argc, char* argv[]) {
                 exit(1);
                 break;
             case STARTCURSOR:
-				streamer = sc_streamer_init_cursor(streamUri, roomName, packet.header.timestamp);
+                start_time_stamp = packet.header.timestamp;
+				streamer = sc_streamer_init_cursor(streamUri, roomName, start_time_stamp);
                 break;
             case STOPCURSOR:
 				sc_streamer_stop_cursor(&streamer);

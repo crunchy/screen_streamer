@@ -58,23 +58,23 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "-w 1440"
+            argument = "-w 2560"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-h 900"
+            argument = "-h 1440"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-r mr4169"
+            argument = "-r mr6138"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-u rtmp://fms-01-us.salescrunch.com:1935/screenshare/mr4169"
+            argument = "-u fms-01-us.crunched.com:1935"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-f runnableStream.tpl"
+            argument = "-f /tmp/runnableStream.tpl"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

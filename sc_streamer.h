@@ -26,7 +26,8 @@ typedef struct {
     uint8_t rtmp_setup;
     uint8_t rtmpt;
     uint16_t so_version;
-    uint8_t reconnect_tries;
+    uint8_t reconnect_tries;    
+    uint8_t have_inital_SO;
 } sc_streamer;
 
 sc_streamer sc_streamer_init_video(const char* stream_host, const char* room_name, sc_frame_rect capture_rect, sc_time start_time_stamp);

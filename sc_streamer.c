@@ -209,13 +209,22 @@ void sc_streamer_reconnect(sc_streamer *streamer) {
 }
 
 void sc_streamer_restart() {
-    printf("Restarting \n");
     if(streamer.so_name != NULL) {
         sc_streamer_stop_cursor(&streamer);
-        streamer = sc_streamer_init_cursor(streamUri, roomName, start_time_stamp);
+		#ifdef _WIN32
+			sc_streamer_teardown_windows();
+            exit(1);
+		#else
+			streamer = sc_streamer_init_cursor(streamUri, roomName, start_time_stamp);
+		#endif
     } else {
         sc_streamer_stop_video(&streamer);
-        streamer = sc_streamer_init_video(streamUri, roomName, capture_rect, start_time_stamp);
+		#ifdef _WIN32
+			sc_streamer_teardown_windows();
+			exit(1);
+		#else
+			streamer = sc_streamer_init_video(streamUri, roomName, capture_rect, start_time_stamp);
+		#endif
     }
 }
 
@@ -229,8 +238,10 @@ int main(int argc, char* argv[]) {
     inFile = NULL;
     sc_frame_rect rect;
     
+	#ifndef _WIN32
     signal(SIGPIPE, sig_pipe_handler);
-    
+	#endif
+
     while ((c = getopt (argc, argv, "w:h:u:r:f:")) != -1) {
         switch (c) {
             case 'w':
@@ -267,7 +278,11 @@ int main(int argc, char* argv[]) {
         sc_frame frame;
         
         if(streamer.rtmp_setup == 1 && (!RTMP_IsConnected(streamer.rtmp) || RTMP_IsTimedout(streamer.rtmp))) {
-            sc_streamer_reconnect(&streamer);
+            #ifdef _WIN32
+				sc_streamer_restart();
+			#else
+				sc_streamer_reconnect(&streamer);
+			#endif
         }
         
         RTMPPacket rp = { 0 };
@@ -309,7 +324,10 @@ int main(int argc, char* argv[]) {
                 break;
             case VIDEO:
 				frame = parse_frame(packet);
-				sc_streamer_send_frame(&streamer, &frame, packet.header.timestamp);
+
+				if((RTMP_IsConnected(streamer.rtmp) &&  !RTMP_IsTimedout(streamer.rtmp)))
+					sc_streamer_send_frame(&streamer, &frame, packet.header.timestamp);
+				
 				free(frame.framePtr);
 				break;
             case NO_DATA:

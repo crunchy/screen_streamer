@@ -208,29 +208,20 @@ void sc_streamer_reconnect(sc_streamer *streamer) {
     } 
 }
 
-void sc_streamer_restart() {
+void sc_streamer_die() {
     if(streamer.so_name != NULL) {
         sc_streamer_stop_cursor(&streamer);
-		#ifdef _WIN32
-			sc_streamer_teardown_windows();
-            exit(1);
-		#else
-			streamer = sc_streamer_init_cursor(streamUri, roomName, start_time_stamp);
-		#endif
+		sc_streamer_teardown_windows();
+        exit(1);
     } else {
         sc_streamer_stop_video(&streamer);
-		#ifdef _WIN32
-			sc_streamer_teardown_windows();
-			exit(1);
-		#else
-			streamer = sc_streamer_init_video(streamUri, roomName, capture_rect, start_time_stamp);
-		#endif
-    }
+		sc_streamer_teardown_windows();
+		exit(1);
+	}
 }
 
 void sig_pipe_handler(int s) {
-    printf("Caught SIGPIPE\n");
-    sc_streamer_restart();
+    sc_streamer_die();
 }
 
 int main(int argc, char* argv[]) {
@@ -279,7 +270,7 @@ int main(int argc, char* argv[]) {
         
         if(streamer.rtmp_setup == 1 && (!RTMP_IsConnected(streamer.rtmp) || RTMP_IsTimedout(streamer.rtmp))) {
             #ifdef _WIN32
-				sc_streamer_restart();
+				sc_streamer_die();
 			#else
 				sc_streamer_reconnect(&streamer);
 			#endif

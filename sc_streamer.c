@@ -75,7 +75,7 @@ sc_streamer sc_streamer_init_video(const char* stream_host, const char* room_nam
     param.rc.i_vbv_buffer_size = 2000;
     param.rc.f_rf_constant = 23;
     param.b_sliced_threads = 0;
-    param.b_intra_refresh = 1;
+    param.b_intra_refresh = 0;
     param.b_repeat_headers = 1;
     param.b_annexb = 0;
     
@@ -323,6 +323,7 @@ int main(int argc, char* argv[]) {
 				break;
             case NO_DATA:
             default:
+                exit(0);
                 break;    // maybe a wait is in order
         }
     }
